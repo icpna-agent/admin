@@ -1,0 +1,154 @@
+<form [formGroup]="form" class="p-6 space-y-4 bg-background/50 rounded-xl backdrop-blur-sm">
+  <!-- Title and Level Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="md:col-span-2">
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Título del Libro <span class="text-danger">*</span></label>
+      <input
+        type="text"
+        formControlName="title"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+        placeholder="Ej: American Big Picture"
+      />
+      @if (form.get('title')?.touched && form.get('title')?.invalid) {
+        <span class="text-[10px] text-danger mt-1 font-inter-medium block">El título es requerido.</span>
+      }
+    </div>
+
+    <div>
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Nivel <span class="text-danger">*</span></label>
+      <select
+        formControlName="level"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20 appearance-none"
+        style="background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724%27 height=%2724%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 class=%27feather feather-chevron-down%27%3E%3Cpolyline points=%276 9 12 15 18 9%27%3E%3C/polyline%3E%3C/svg%3E'); background-position: right 0.75rem center; background-repeat: no-repeat; background-size: 1rem;"
+      >
+        @for (level of levels; track level) {
+          <option [value]="level">{{ level | titlecase }}</option>
+        }
+      </select>
+      @if (form.get('level')?.touched && form.get('level')?.invalid) {
+        <span class="text-[10px] text-danger mt-1 font-inter-medium block">Nivel requerido.</span>
+      }
+    </div>
+  </div>
+
+  <!-- Author, Publisher, Edition Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Autor</label>
+      <input
+        type="text"
+        formControlName="author"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+        placeholder="Ej: Ben Goldstein"
+      />
+    </div>
+
+    <div>
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Editorial</label>
+      <input
+        type="text"
+        formControlName="publisher"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+        placeholder="Ej: Richmond"
+      />
+    </div>
+
+    <div>
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Edición</label>
+      <input
+        type="text"
+        formControlName="edition"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+        placeholder="Ej: Intermediate 7"
+      />
+    </div>
+  </div>
+
+  <!-- Institution, Language, Sublevel Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Institución <span class="text-danger">*</span></label>
+      <input
+        type="text"
+        formControlName="institution"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+        placeholder="Ej: ICPNA"
+      />
+      @if (form.get('institution')?.touched && form.get('institution')?.invalid) {
+        <span class="text-[10px] text-danger mt-1 font-inter-medium block">Institución requerida.</span>
+      }
+    </div>
+
+    <div>
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Idioma <span class="text-danger">*</span></label>
+      <input
+        type="text"
+        formControlName="language"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+        placeholder="Ej: english"
+      />
+      @if (form.get('language')?.touched && form.get('language')?.invalid) {
+        <span class="text-[10px] text-danger mt-1 font-inter-medium block">Idioma requerido.</span>
+      }
+    </div>
+
+    <div>
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Sub-Nivel / Unidad N°</label>
+      <input
+        type="number"
+        formControlName="subLevel"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+        placeholder="Ej: 7"
+        min="1"
+      />
+      @if (form.get('subLevel')?.touched && form.get('subLevel')?.invalid) {
+        <span class="text-[10px] text-danger mt-1 font-inter-medium block">Mínimo 1.</span>
+      }
+    </div>
+  </div>
+
+  <hr class="border-text/10" />
+
+  <!-- Program, CEFR, Active Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+    <div>
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Programa Destino <span class="text-danger">*</span></label>
+      <select
+        formControlName="targetProgram"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20 appearance-none"
+        style="background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724%27 height=%2724%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 class=%27feather feather-chevron-down%27%3E%3Cpolyline points=%276 9 12 15 18 9%27%3E%3C/polyline%3E%3C/svg%3E'); background-position: right 0.75rem center; background-repeat: no-repeat; background-size: 1rem;"
+      >
+        @for (program of targetPrograms; track program) {
+          <option [value]="program">{{ program | titlecase }}</option>
+        }
+      </select>
+      @if (form.get('targetProgram')?.touched && form.get('targetProgram')?.invalid) {
+        <span class="text-[10px] text-danger mt-1 font-inter-medium block">Programa requerido.</span>
+      }
+    </div>
+
+    <div>
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Equivalencia MCER (CEFR)</label>
+      <select
+        formControlName="cefrEquivalent"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20 appearance-none"
+        style="background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724%27 height=%2724%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 class=%27feather feather-chevron-down%27%3E%3Cpolyline points=%276 9 12 15 18 9%27%3E%3C/polyline%3E%3C/svg%3E'); background-position: right 0.75rem center; background-repeat: no-repeat; background-size: 1rem;"
+      >
+        <option value="">Ninguna</option>
+        @for (cefr of cefrEquivalents; track cefr) {
+          <option [value]="cefr">{{ cefr | uppercase }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="flex items-center gap-2 pt-6">
+      <input
+        type="checkbox"
+        id="active"
+        formControlName="active"
+        class="w-4 h-4 text-secondary bg-text/5 border border-text/10 rounded focus:ring-secondary transition-all"
+      />
+      <label for="active" class="text-sm font-inter-medium text-text select-none cursor-pointer">Libro Activo</label>
+    </div>
+  </div>
+</form>

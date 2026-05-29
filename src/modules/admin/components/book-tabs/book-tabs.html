@@ -1,0 +1,16 @@
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-4 w-full">
+  @for (tab of tabs; track tab.label) {
+    @if (tab.disabled) {
+      <div class="flex flex-col items-start justify-center gap-2 px-4 py-3 bg-text/5 border border-text/5 rounded-xl text-text/40 cursor-not-allowed opacity-50 select-none w-full h-full">
+        <i [class]="tab.icon + ' text-xl text-inherit'"></i>
+        <span class="text-sm font-inter-bold text-inherit">{{ tab.label }}</span>
+      </div>
+    } @else {
+      <a [routerLink]="getTabLink(tab.path)" routerLinkActive="!bg-secondary !text-background !border-secondary shadow-md" [routerLinkActiveOptions]="{exact: false}"
+         class="flex flex-col items-start justify-center gap-2 px-4 py-3 bg-background border border-text/10 rounded-xl text-text hover:border-text/30 transition-all cursor-pointer w-full h-full">
+        <i [class]="tab.icon + ' text-xl text-inherit'"></i>
+        <span class="text-sm font-inter-bold text-inherit">{{ tab.label }}</span>
+      </a>
+    }
+  }
+</div>
