@@ -1,13 +1,13 @@
 import { Injectable, signal, Inject, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Api, ApiResponse } from 'api/backend.api';
+import { ApiResponse } from 'api/backend.api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SessionService {
   private readonly STORAGE_KEY = 'user_session';
-  private api = inject(Api);
+
   session = signal<ApiResponse<"auth","login"> | null>(null);
   profilePicture = signal<string | null>(null);
 

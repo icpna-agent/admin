@@ -1,0 +1,5 @@
+{
+    "scarch.enabled": true,
+    "scarch.rulesFolder": "/Users/erixcel/UTP/taller de investigacion/scarch/examples/rules",
+    "scarch.ignoreFile": "/Users/erixcel/UTP/taller de investigacion/scarch/examples/scarchignore.txt"
+}

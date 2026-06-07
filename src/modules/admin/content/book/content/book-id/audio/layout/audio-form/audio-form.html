@@ -1,0 +1,78 @@
+<form [formGroup]="form" class="p-6 space-y-4">
+  <!-- Core Information Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="md:col-span-2">
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">URL del Audio <span class="text-danger">*</span></label>
+      <input
+        type="text"
+        formControlName="url"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+        placeholder="Ej: https://example.com/audio/7.1.mp3"
+      />
+      @if (form.get('url')?.touched && form.get('url')?.invalid) {
+        <span class="text-[10px] text-danger mt-1 font-inter-medium block">La URL del audio es requerida.</span>
+      }
+    </div>
+
+    <div>
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Índice del Audio <span class="text-danger">*</span></label>
+      <input
+        type="text"
+        formControlName="audioIndex"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+        placeholder="Ej: 7.1"
+      />
+      @if (form.get('audioIndex')?.touched && form.get('audioIndex')?.invalid) {
+        <span class="text-[10px] text-danger mt-1 font-inter-medium block">El índice del audio es requerido.</span>
+      }
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Página del Libro <span class="text-danger">*</span></label>
+      <input
+        type="number"
+        formControlName="bookPage"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+        placeholder="Ej: 2"
+        min="1"
+      />
+      @if (form.get('bookPage')?.touched && form.get('bookPage')?.invalid) {
+        <span class="text-[10px] text-danger mt-1 font-inter-medium block">Página física válida requerida (mín. 1).</span>
+      }
+    </div>
+
+    <div>
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">ID Meta Media</label>
+      <input
+        type="number"
+        formControlName="metaMediaId"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+        placeholder="Ej: 123"
+        min="1"
+      />
+    </div>
+  </div>
+
+  <hr class="border-text/10" />
+
+  <!-- Transcription textarea -->
+  <div>
+    <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Transcripción del Audio</label>
+    <textarea
+      formControlName="transcription"
+      rows="4"
+      class="w-full px-3 py-2 text-xs bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+      placeholder="Ej: Listen to the conversation..."
+    ></textarea>
+  </div>
+
+  <!-- Audio Player Preview Widget -->
+  @if (form.get('url')?.value && form.get('url')?.valid) {
+    <div class="p-3 bg-secondary/5 border border-secondary/10 rounded-xl space-y-2 animate-fade-in">
+      <label class="block text-[10px] font-inter-bold text-secondary uppercase tracking-wider">Previsualización de Audio</label>
+      <audio [src]="form.get('url')?.value" controls class="w-full h-8"></audio>
+    </div>
+  }
+</form>

@@ -1,0 +1,56 @@
+<form [formGroup]="formularioUsuario" class="p-6 space-y-4">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- Teléfono -->
+    <div>
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Teléfono <span class="text-danger">*</span></label>
+      <input
+        type="text"
+        formControlName="phone"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+        placeholder="Ej: +51999999999"
+      />
+      @if (formularioUsuario.get('phone')?.touched && formularioUsuario.get('phone')?.invalid) {
+        <span class="text-[10px] text-danger mt-1 font-inter-medium block">
+          @if (formularioUsuario.get('phone')?.errors?.['required']) {
+            El teléfono es requerido.
+          } @else {
+            Formato de teléfono inválido (ej: +51999999999).
+          }
+        </span>
+      }
+    </div>
+
+    <!-- Habilitado -->
+    <div class="flex items-center gap-2 pt-6">
+      <input
+        type="checkbox"
+        id="enabled"
+        formControlName="enabled"
+        class="w-4 h-4 text-secondary bg-text/5 border border-text/10 rounded focus:ring-secondary transition-all"
+      />
+      <label for="enabled" class="text-xs font-inter-bold text-text/80 uppercase tracking-wider select-none cursor-pointer">Usuario Habilitado</label>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- Habilitado Desde -->
+    <div>
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Habilitado Desde</label>
+      <input
+        type="datetime-local"
+        formControlName="enabledFrom"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+      />
+    </div>
+
+    <!-- Habilitado Hasta -->
+    <div>
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Habilitado Hasta</label>
+      <input
+        type="datetime-local"
+        formControlName="enabledTo"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+      />
+    </div>
+  </div>
+</form>

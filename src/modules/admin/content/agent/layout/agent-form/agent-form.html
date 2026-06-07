@@ -1,0 +1,183 @@
+<div class="p-6 space-y-6">
+  <!-- ===== SECCIÓN BOT (AGENTE) ===== -->
+  <div>
+    <div class="flex items-center gap-2 mb-6">
+      <i class="fas fa-robot text-secondary"></i>
+      <h3 class="text-sm font-inter-bold text-text/80 uppercase tracking-wider">Datos del Agente</h3>
+    </div>
+
+    <form [formGroup]="botForm" class="space-y-4">
+      <!-- Name and Phone -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Nombre del Agente <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            formControlName="name"
+            class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+            placeholder="Ej: ICPNA Agent"
+          />
+          @if (botForm.get('name')?.touched && botForm.get('name')?.invalid) {
+            <span class="text-[10px] text-danger mt-1 font-inter-medium block">El nombre es requerido.</span>
+          }
+        </div>
+
+        <div>
+          <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Teléfono <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            formControlName="phone"
+            class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+            placeholder="Ej: +51999999999"
+          />
+          @if (botForm.get('phone')?.touched && botForm.get('phone')?.invalid) {
+            <span class="text-[10px] text-danger mt-1 font-inter-medium block">El teléfono es requerido.</span>
+          }
+        </div>
+      </div>
+
+      <!-- Model -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Modelo IA <span class="text-danger">*</span></label>
+          <select
+            formControlName="model"
+            class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20 appearance-none"
+            style="background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724%27 height=%2724%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 class=%27feather feather-chevron-down%27%3E%3Cpolyline points=%276 9 12 15 18 9%27%3E%3C/polyline%3E%3C/svg%3E'); background-position: right 0.75rem center; background-repeat: no-repeat; background-size: 1rem;"
+          >
+            @for (m of models; track m) {
+              <option [value]="m">{{ m | uppercase }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <!-- Prompt -->
+      <div>
+        <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Prompt del Sistema <span class="text-danger">*</span></label>
+        <textarea
+          formControlName="prompt"
+          rows="20"
+          class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20 resize-y"
+          placeholder="Ej: Eres un asistente de conversación para estudiantes de inglés..."
+        ></textarea>
+        @if (botForm.get('prompt')?.touched && botForm.get('prompt')?.invalid) {
+          <span class="text-[10px] text-danger mt-1 font-inter-medium block">El prompt es requerido.</span>
+        }
+      </div>
+    </form>
+  </div>
+
+  <hr class="border-text/10 my-6" />
+
+  <!-- ===== SECCIÓN INSTANCIA (WHATSAPP) ===== -->
+  <div>
+    <div class="flex items-center gap-2 mb-6">
+      <i class="fab fa-whatsapp text-success"></i>
+      <h3 class="text-sm font-inter-bold text-text/80 uppercase tracking-wider">Instancia WhatsApp</h3>
+    </div>
+
+    <form [formGroup]="instanceForm" class="space-y-4">
+      <!-- Type and Provider -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Tipo WhatsApp <span class="text-danger">*</span></label>
+          <select
+            formControlName="whatsapp_type"
+            class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20 appearance-none"
+            style="background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724%27 height=%2724%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 class=%27feather feather-chevron-down%27%3E%3Cpolyline points=%276 9 12 15 18 9%27%3E%3C/polyline%3E%3C/svg%3E'); background-position: right 0.75rem center; background-repeat: no-repeat; background-size: 1rem;"
+          >
+            @for (t of whatsappTypes; track t) {
+              <option [value]="t">{{ t | titlecase }}</option>
+            }
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Proveedor <span class="text-danger">*</span></label>
+          <select
+            formControlName="provider_type"
+            class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20 appearance-none"
+            style="background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724%27 height=%2724%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27currentColor%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 class=%27feather feather-chevron-down%27%3E%3Cpolyline points=%276 9 12 15 18 9%27%3E%3C/polyline%3E%3C/svg%3E'); background-position: right 0.75rem center; background-repeat: no-repeat; background-size: 1rem;"
+          >
+            @for (p of providerTypes; track p) {
+              <option [value]="p">{{ p | titlecase }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <!-- Business ID and Phone Number ID -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Business ID <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            formControlName="business_id"
+            class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+            placeholder="Ej: 123456789012345"
+          />
+          @if (instanceForm.get('business_id')?.touched && instanceForm.get('business_id')?.invalid) {
+            <span class="text-[10px] text-danger mt-1 font-inter-medium block">Business ID es requerido.</span>
+          }
+        </div>
+
+        <div>
+          <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Phone Number ID <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            formControlName="phone_number_id"
+            class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+            placeholder="Ej: 987654321098765"
+          />
+          @if (instanceForm.get('phone_number_id')?.touched && instanceForm.get('phone_number_id')?.invalid) {
+            <span class="text-[10px] text-danger mt-1 font-inter-medium block">Phone Number ID es requerido.</span>
+          }
+        </div>
+      </div>
+
+      <!-- Display Phone and WABA ID -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Teléfono Visible <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            formControlName="display_phone_number"
+            class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+            placeholder="Ej: +51999999999"
+          />
+          @if (instanceForm.get('display_phone_number')?.touched && instanceForm.get('display_phone_number')?.invalid) {
+            <span class="text-[10px] text-danger mt-1 font-inter-medium block">Teléfono visible es requerido.</span>
+          }
+        </div>
+
+        <div>
+          <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">WABA ID <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            formControlName="waba_id"
+            class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+            placeholder="Ej: 234567890123456"
+          />
+          @if (instanceForm.get('waba_id')?.touched && instanceForm.get('waba_id')?.invalid) {
+            <span class="text-[10px] text-danger mt-1 font-inter-medium block">WABA ID es requerido.</span>
+          }
+        </div>
+      </div>
+
+      <!-- Token -->
+      <div>
+        <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Token de Acceso <span class="text-danger">*</span></label>
+        <input
+          type="text"
+          formControlName="token"
+          class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+          placeholder="Ej: EAAG..."
+        />
+        @if (instanceForm.get('token')?.touched && instanceForm.get('token')?.invalid) {
+          <span class="text-[10px] text-danger mt-1 font-inter-medium block">Token es requerido.</span>
+        }
+      </div>
+    </form>
+  </div>
+</div>

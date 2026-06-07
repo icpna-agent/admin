@@ -73,7 +73,7 @@ export class Navbar {
   }
 
   goToProfile() {
-    this.router.navigate([buildPath(PATH.admin.book)]);
+    this.router.navigate([buildPath(PATH.admin.agent.list)]);
     this.isDropdownOpen.set(false);
   }
 

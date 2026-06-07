@@ -58,34 +58,51 @@ export const PATH = {
       _path: 'book',
       list: { _path: 'list' },
       edit: { _path: 'edit/:id' },
+      id: {
+        _path: ':bookId',
+        index: {
+          _path: 'index',
+          list: { _path: 'list' },
+          edit: { _path: 'edit/:id' },
+        },
+        unit: {
+          _path: 'unit',
+          list: { _path: 'list' },
+          edit: { _path: 'edit/:id' },
+        },
+        lesson: {
+          _path: 'lesson',
+          list: { _path: 'list' },
+          edit: { _path: 'edit/:id' },
+        },
+        panel: {
+          _path: 'panel',
+          list: { _path: 'list' },
+          edit: { _path: 'edit/:id' },
+        },
+        audio: {
+          _path: 'audio',
+          list: { _path: 'list' },
+          edit: { _path: 'edit/:id' },
+        },
+        image: {
+          _path: 'image',
+          list: { _path: 'list' },
+          edit: { _path: 'edit/:id' },
+        },
+        ia: {
+          _path: 'ia',
+          list: { _path: 'list' },
+        },
+      },
     },
-    index: {
-      _path: 'index',
+    agent: {
+      _path: 'agent',
       list: { _path: 'list' },
       edit: { _path: 'edit/:id' },
     },
-    unit: {
-      _path: 'unit',
-      list: { _path: 'list' },
-      edit: { _path: 'edit/:id' },
-    },
-    lesson: {
-      _path: 'lesson',
-      list: { _path: 'list' },
-      edit: { _path: 'edit/:id' },
-    },
-    panel: {
-      _path: 'panel',
-      list: { _path: 'list' },
-      edit: { _path: 'edit/:id' },
-    },
-    audio: {
-      _path: 'audio',
-      list: { _path: 'list' },
-      edit: { _path: 'edit/:id' },
-    },
-    image: {
-      _path: 'image',
+    user: {
+      _path: 'user',
       list: { _path: 'list' },
       edit: { _path: 'edit/:id' },
     },
@@ -110,34 +127,48 @@ export const ROUTE_CONFIG = {
     [buildPath(PATH.admin.book.edit)]: ['admin'],
 
     // Index
-    [buildPath(PATH.admin.index)]: ['admin', 'empleado'],
-    [buildPath(PATH.admin.index.list)]: ['admin', 'empleado'],
-    [buildPath(PATH.admin.index.edit)]: ['admin'],
+    [buildPath(PATH.admin.book.id.index)]: ['admin', 'empleado'],
+    [buildPath(PATH.admin.book.id.index.list)]: ['admin', 'empleado'],
+    [buildPath(PATH.admin.book.id.index.edit)]: ['admin'],
 
     // Unit
-    [buildPath(PATH.admin.unit)]: ['admin', 'empleado'],
-    [buildPath(PATH.admin.unit.list)]: ['admin', 'empleado'],
-    [buildPath(PATH.admin.unit.edit)]: ['admin'],
+    [buildPath(PATH.admin.book.id.unit)]: ['admin', 'empleado'],
+    [buildPath(PATH.admin.book.id.unit.list)]: ['admin', 'empleado'],
+    [buildPath(PATH.admin.book.id.unit.edit)]: ['admin'],
 
     // Lesson
-    [buildPath(PATH.admin.lesson)]: ['admin', 'empleado'],
-    [buildPath(PATH.admin.lesson.list)]: ['admin', 'empleado'],
-    [buildPath(PATH.admin.lesson.edit)]: ['admin'],
+    [buildPath(PATH.admin.book.id.lesson)]: ['admin', 'empleado'],
+    [buildPath(PATH.admin.book.id.lesson.list)]: ['admin', 'empleado'],
+    [buildPath(PATH.admin.book.id.lesson.edit)]: ['admin'],
 
     // Panel
-    [buildPath(PATH.admin.panel)]: ['admin', 'empleado'],
-    [buildPath(PATH.admin.panel.list)]: ['admin', 'empleado'],
-    [buildPath(PATH.admin.panel.edit)]: ['admin'],
+    [buildPath(PATH.admin.book.id.panel)]: ['admin', 'empleado'],
+    [buildPath(PATH.admin.book.id.panel.list)]: ['admin', 'empleado'],
+    [buildPath(PATH.admin.book.id.panel.edit)]: ['admin'],
 
     // Audio
-    [buildPath(PATH.admin.audio)]: ['admin', 'empleado'],
-    [buildPath(PATH.admin.audio.list)]: ['admin', 'empleado'],
-    [buildPath(PATH.admin.audio.edit)]: ['admin'],
+    [buildPath(PATH.admin.book.id.audio)]: ['admin', 'empleado'],
+    [buildPath(PATH.admin.book.id.audio.list)]: ['admin', 'empleado'],
+    [buildPath(PATH.admin.book.id.audio.edit)]: ['admin'],
 
     // Image
-    [buildPath(PATH.admin.image)]: ['admin', 'empleado'],
-    [buildPath(PATH.admin.image.list)]: ['admin', 'empleado'],
-    [buildPath(PATH.admin.image.edit)]: ['admin'],
+    [buildPath(PATH.admin.book.id.image)]: ['admin', 'empleado'],
+    [buildPath(PATH.admin.book.id.image.list)]: ['admin', 'empleado'],
+    [buildPath(PATH.admin.book.id.image.edit)]: ['admin'],
+
+    // IA
+    [buildPath(PATH.admin.book.id.ia)]: ['admin', 'empleado'],
+    [buildPath(PATH.admin.book.id.ia.list)]: ['admin', 'empleado'],
+
+    // Agent
+    [buildPath(PATH.admin.agent)]: ['admin'],
+    [buildPath(PATH.admin.agent.list)]: ['admin'],
+    [buildPath(PATH.admin.agent.edit)]: ['admin'],
+
+    // User
+    [buildPath(PATH.admin.user)]: ['admin'],
+    [buildPath(PATH.admin.user.list)]: ['admin'],
+    [buildPath(PATH.admin.user.edit)]: ['admin'],
 
     // Errors
     [buildPath(PATH.error.unauthorized)]: ['admin', 'empleado'],

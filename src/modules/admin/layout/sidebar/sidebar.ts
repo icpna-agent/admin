@@ -63,7 +63,7 @@ export class Sidebar implements OnInit {
   }
 
   bookPath(bookId: number) {
-    return `${buildPath(PATH.admin.book)}/${bookId}/${getPath(PATH.admin.index)}`;
+    return buildPath(PATH.admin.book.id.index.list).replace(':bookId', bookId.toString());
   }
 
   logout() {
@@ -86,5 +86,13 @@ export class Sidebar implements OnInit {
 
   isBookSectionActive() {
     return this.currentUrl().startsWith(`/${buildPath(PATH.admin.book)}`);
+  }
+
+  isAgentSectionActive() {
+    return this.currentUrl().startsWith(`/${buildPath(PATH.admin.agent)}`);
+  }
+
+  isUserSectionActive() {
+    return this.currentUrl().startsWith(`/${buildPath(PATH.admin.user)}`);
   }
 }

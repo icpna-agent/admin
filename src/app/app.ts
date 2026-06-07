@@ -9,4 +9,5 @@ import { Alert } from '@component/alert/alert';
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {}
+export class App { }
+

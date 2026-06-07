@@ -566,6 +566,176 @@ export interface BookImageUpdateDto {
   bookId?: number;
 }
 
+export interface BookCaptureEventDto {
+  /**
+   * Tipo de evento de la captura
+   * @example "page"
+   */
+  type: "start" | "page" | "complete" | "error";
+  /** Datos asociados al tipo de evento */
+  data: object;
+}
+
+export interface BotResultDto {
+  id: number;
+  phone: string;
+  name: string;
+  prompt: string;
+  model: "gpt" | "gemini";
+}
+
+export interface BotListDto {
+  data: BotResultDto[];
+  meta: PaginationMetaDto;
+}
+
+export interface BotCreateDto {
+  /** @example "+51999999999" */
+  phone: string;
+  /** @example "ICPNA Agent" */
+  name: string;
+  /** @example "Eres un asistente de conversación..." */
+  prompt: string;
+  /** @example "gpt" */
+  model: "gpt" | "gemini";
+}
+
+export interface BotUpdateDto {
+  /** @example "+51999999999" */
+  phone?: string;
+  /** @example "ICPNA Agent" */
+  name?: string;
+  /** @example "Eres un asistente de conversación..." */
+  prompt?: string;
+  /** @example "gpt" */
+  model?: "gpt" | "gemini";
+}
+
+export interface BotDeleteResultDto {
+  /** @example true */
+  success: boolean;
+}
+
+export interface InstanceResultDto {
+  id: number;
+  bot_id: number;
+  whatsapp_type: "business";
+  provider_type: "meta";
+  business_id: string;
+  phone_number_id: string;
+  display_phone_number: string;
+  waba_id: string;
+  token: string;
+}
+
+export interface InstanceListDto {
+  data: InstanceResultDto[];
+  meta: PaginationMetaDto;
+}
+
+export interface InstanceCreateDto {
+  /** @example 1 */
+  bot_id: number;
+  /** @example "business" */
+  whatsapp_type: "business";
+  /** @example "meta" */
+  provider_type: "meta";
+  /** @example "123456789012345" */
+  business_id: string;
+  /** @example "987654321098765" */
+  phone_number_id: string;
+  /** @example "+51999999999" */
+  display_phone_number: string;
+  /** @example "234567890123456" */
+  waba_id: string;
+  /** @example "EAAG..." */
+  token: string;
+}
+
+export interface InstanceUpdateDto {
+  /** @example 1 */
+  bot_id?: number;
+  /** @example "business" */
+  whatsapp_type?: "business";
+  /** @example "meta" */
+  provider_type?: "meta";
+  /** @example "123456789012345" */
+  business_id?: string;
+  /** @example "987654321098765" */
+  phone_number_id?: string;
+  /** @example "+51999999999" */
+  display_phone_number?: string;
+  /** @example "234567890123456" */
+  waba_id?: string;
+  /** @example "EAAG..." */
+  token?: string;
+}
+
+export interface InstanceDeleteResultDto {
+  /** @example true */
+  success: boolean;
+}
+
+export interface UserResultDto {
+  id: number;
+  phone: string;
+  enabled: boolean;
+  /** @format date-time */
+  enabledFrom?: string | null;
+  /** @format date-time */
+  enabledTo?: string | null;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+  /** @format date-time */
+  deletedAt?: string | null;
+}
+
+export interface UserListDto {
+  data: UserResultDto[];
+  meta: PaginationMetaDto;
+}
+
+export interface UserCreateDto {
+  /** @example "+51999999999" */
+  phone: string;
+  /** @default true */
+  enabled?: boolean;
+  /**
+   * @format date-time
+   * @example "2026-06-06T00:00:00.000Z"
+   */
+  enabledFrom?: string;
+  /**
+   * @format date-time
+   * @example "2026-12-31T23:59:59.000Z"
+   */
+  enabledTo?: string;
+}
+
+export interface UserUpdateDto {
+  /** @example "+51999999999" */
+  phone?: string;
+  /** @default true */
+  enabled?: boolean;
+  /**
+   * @format date-time
+   * @example "2026-06-06T00:00:00.000Z"
+   */
+  enabledFrom?: string;
+  /**
+   * @format date-time
+   * @example "2026-12-31T23:59:59.000Z"
+   */
+  enabledTo?: string;
+}
+
+export interface UserDeleteResultDto {
+  /** @example true */
+  success: boolean;
+}
+
 export type AppGetHelloData = any;
 
 export interface EngineVerifyWebhookParams {
@@ -576,7 +746,7 @@ export interface EngineVerifyWebhookParams {
 
 export type EngineVerifyWebhookData = any;
 
-/** @example {"object":"whatsapp_business_account","entry":[{"id":"239467ff-4961-48c5-a90e-2a5658c944ff","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"51936081148","phone_number_id":"756536844216424"},"contacts":[{"profile":{"name":"Santos Cachorros"},"wa_id":"1443782653529215"}],"messages":[{"from":"51929073820","id":"5a5d061b-edb9-4b37-9147-30f6cceba885","timestamp":"1780082561644","text":{"body":"<MESSAGE_BODY_TEXT>"},"type":"text"}]},"field":"messages"}]}]} */
+/** @example {"object":"whatsapp_business_account","entry":[{"id":"97692351-7b88-4324-9095-1d81ddb199f2","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"51936081148","phone_number_id":"756536844216424"},"contacts":[{"profile":{"name":"Santos Cachorros"},"wa_id":"1443782653529215"}],"messages":[{"from":"51929073820","id":"0b1b8e39-d3cf-4334-bf48-87e6c511a881","timestamp":"1780765696912","text":{"body":"<MESSAGE_BODY_TEXT>"},"type":"text"}]},"field":"messages"}]}]} */
 export type EngineRunFlowProductionPayload = any;
 
 export type EngineRunFlowProductionData = any;
@@ -841,6 +1011,129 @@ export interface BookDeleteBookImageParams {
 }
 
 export type BookDeleteBookImageData = BookImageResultDto;
+
+export interface BookAutoCaptureAmericanBigPictureParams {
+  /**
+   * URL base del flipbook
+   * @example "https://duxebhp63ladi.cloudfront.net/americanbigpicture/flipbook/b1p/abp8b1p_sb/index.html"
+   */
+  bookUrl: string;
+  /**
+   * Página de inicio en el DOM
+   * @example 5
+   */
+  startDomPage: number;
+  /**
+   * Página final en el DOM
+   * @example 48
+   */
+  endDomPage: number;
+  /**
+   * Offset para restar y obtener la numeración real
+   * @example 4
+   */
+  pageOffset: number;
+  /**
+   * Token JWT para autenticación SSE
+   * @example "eyJhbGciOi..."
+   */
+  token?: string;
+}
+
+export type BookAutoCaptureAmericanBigPictureData = BookCaptureEventDto;
+
+export interface AgentFindAllBotsParams {
+  /** @default 1 */
+  page?: number;
+  /** @default 10 */
+  limit?: number;
+  search?: string;
+  model?: "gpt" | "gemini";
+}
+
+export type AgentFindAllBotsData = BotListDto;
+
+export interface AgentFindOneBotParams {
+  id: number;
+}
+
+export type AgentFindOneBotData = BotResultDto;
+
+export type AgentCreateBotData = BotResultDto;
+
+export interface AgentUpdateBotParams {
+  id: number;
+}
+
+export type AgentUpdateBotData = BotResultDto;
+
+export interface AgentDeleteBotParams {
+  id: number;
+}
+
+export type AgentDeleteBotData = BotDeleteResultDto;
+
+export interface AgentFindAllInstancesParams {
+  /** @default 1 */
+  page?: number;
+  /** @default 10 */
+  limit?: number;
+  search?: string;
+  botId?: number;
+}
+
+export type AgentFindAllInstancesData = InstanceListDto;
+
+export interface AgentFindOneInstanceParams {
+  id: number;
+}
+
+export type AgentFindOneInstanceData = InstanceResultDto;
+
+export type AgentCreateInstanceData = InstanceResultDto;
+
+export interface AgentUpdateInstanceParams {
+  id: number;
+}
+
+export type AgentUpdateInstanceData = InstanceResultDto;
+
+export interface AgentDeleteInstanceParams {
+  id: number;
+}
+
+export type AgentDeleteInstanceData = InstanceDeleteResultDto;
+
+export interface UserFindAllParams {
+  /** @default 1 */
+  page?: number;
+  /** @default 10 */
+  limit?: number;
+  search?: string;
+  enabled?: boolean;
+}
+
+export type UserFindAllData = UserListDto;
+
+export interface UserFindOneParams {
+  id: number;
+}
+
+export type UserFindOneData = UserResultDto;
+
+export type UserCreateData = UserResultDto;
+
+export interface UserUpdateParams {
+  id: number;
+}
+
+export type UserUpdateData = UserResultDto;
+
+export interface UserDeleteParams {
+  id: number;
+}
+
+export type UserDeleteData = UserDeleteResultDto;
 
 export namespace App {
   /**
@@ -1643,6 +1936,349 @@ export namespace Book {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = BookDeleteBookImageData;
+  }
+}
+
+export namespace BookAuto {
+  /**
+   * No description
+   * @tags book-auto
+   * @name BookAutoCaptureAmericanBigPicture
+   * @summary Capture flipbook pages as JPG screenshots using Playwright and stream via SSE
+   * @request GET:/admin/book-auto/american-big-picture
+   * @secure
+   * @response `200` `BookAutoCaptureAmericanBigPictureData` Stream de eventos conteniendo metadatos y capturas de páginas en base64
+   */
+  export namespace BookAutoCaptureAmericanBigPicture {
+    export type RequestParams = {};
+    export type RequestQuery = {
+      /**
+       * URL base del flipbook
+       * @example "https://duxebhp63ladi.cloudfront.net/americanbigpicture/flipbook/b1p/abp8b1p_sb/index.html"
+       */
+      bookUrl: string;
+      /**
+       * Página de inicio en el DOM
+       * @example 5
+       */
+      startDomPage: number;
+      /**
+       * Página final en el DOM
+       * @example 48
+       */
+      endDomPage: number;
+      /**
+       * Offset para restar y obtener la numeración real
+       * @example 4
+       */
+      pageOffset: number;
+      /**
+       * Token JWT para autenticación SSE
+       * @example "eyJhbGciOi..."
+       */
+      token?: string;
+    };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = BookAutoCaptureAmericanBigPictureData;
+  }
+}
+
+export namespace Agent {
+  /**
+   * No description
+   * @tags agent
+   * @name AgentFindAllBots
+   * @summary Get all agents paginated
+   * @request GET:/admin/agent/find-all
+   * @secure
+   * @response `200` `AgentFindAllBotsData`
+   */
+  export namespace AgentFindAllBots {
+    export type RequestParams = {};
+    export type RequestQuery = {
+      /** @default 1 */
+      page?: number;
+      /** @default 10 */
+      limit?: number;
+      search?: string;
+      model?: "gpt" | "gemini";
+    };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = AgentFindAllBotsData;
+  }
+
+  /**
+   * No description
+   * @tags agent
+   * @name AgentFindOneBot
+   * @summary Get an agent by ID
+   * @request GET:/admin/agent/find-one/{id}
+   * @secure
+   * @response `200` `AgentFindOneBotData`
+   */
+  export namespace AgentFindOneBot {
+    export type RequestParams = {
+      id: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = AgentFindOneBotData;
+  }
+
+  /**
+   * No description
+   * @tags agent
+   * @name AgentCreateBot
+   * @summary Create an agent
+   * @request POST:/admin/agent/create
+   * @secure
+   * @response `200` `AgentCreateBotData`
+   */
+  export namespace AgentCreateBot {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = BotCreateDto;
+    export type RequestHeaders = {};
+    export type ResponseBody = AgentCreateBotData;
+  }
+
+  /**
+   * No description
+   * @tags agent
+   * @name AgentUpdateBot
+   * @summary Update an agent
+   * @request PATCH:/admin/agent/update/{id}
+   * @secure
+   * @response `200` `AgentUpdateBotData`
+   */
+  export namespace AgentUpdateBot {
+    export type RequestParams = {
+      id: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = BotUpdateDto;
+    export type RequestHeaders = {};
+    export type ResponseBody = AgentUpdateBotData;
+  }
+
+  /**
+   * No description
+   * @tags agent
+   * @name AgentDeleteBot
+   * @summary Delete an agent
+   * @request DELETE:/admin/agent/delete/{id}
+   * @secure
+   * @response `200` `AgentDeleteBotData`
+   */
+  export namespace AgentDeleteBot {
+    export type RequestParams = {
+      id: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = AgentDeleteBotData;
+  }
+
+  /**
+   * No description
+   * @tags agent
+   * @name AgentFindAllInstances
+   * @summary Get all WhatsApp instances paginated
+   * @request GET:/admin/agent/instance/find-all
+   * @secure
+   * @response `200` `AgentFindAllInstancesData`
+   */
+  export namespace AgentFindAllInstances {
+    export type RequestParams = {};
+    export type RequestQuery = {
+      /** @default 1 */
+      page?: number;
+      /** @default 10 */
+      limit?: number;
+      search?: string;
+      botId?: number;
+    };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = AgentFindAllInstancesData;
+  }
+
+  /**
+   * No description
+   * @tags agent
+   * @name AgentFindOneInstance
+   * @summary Get a WhatsApp instance by ID
+   * @request GET:/admin/agent/instance/find-one/{id}
+   * @secure
+   * @response `200` `AgentFindOneInstanceData`
+   */
+  export namespace AgentFindOneInstance {
+    export type RequestParams = {
+      id: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = AgentFindOneInstanceData;
+  }
+
+  /**
+   * No description
+   * @tags agent
+   * @name AgentCreateInstance
+   * @summary Create a WhatsApp instance
+   * @request POST:/admin/agent/instance/create
+   * @secure
+   * @response `200` `AgentCreateInstanceData`
+   */
+  export namespace AgentCreateInstance {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = InstanceCreateDto;
+    export type RequestHeaders = {};
+    export type ResponseBody = AgentCreateInstanceData;
+  }
+
+  /**
+   * No description
+   * @tags agent
+   * @name AgentUpdateInstance
+   * @summary Update a WhatsApp instance
+   * @request PATCH:/admin/agent/instance/update/{id}
+   * @secure
+   * @response `200` `AgentUpdateInstanceData`
+   */
+  export namespace AgentUpdateInstance {
+    export type RequestParams = {
+      id: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = InstanceUpdateDto;
+    export type RequestHeaders = {};
+    export type ResponseBody = AgentUpdateInstanceData;
+  }
+
+  /**
+   * No description
+   * @tags agent
+   * @name AgentDeleteInstance
+   * @summary Delete a WhatsApp instance
+   * @request DELETE:/admin/agent/instance/delete/{id}
+   * @secure
+   * @response `200` `AgentDeleteInstanceData`
+   */
+  export namespace AgentDeleteInstance {
+    export type RequestParams = {
+      id: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = AgentDeleteInstanceData;
+  }
+}
+
+export namespace User {
+  /**
+   * No description
+   * @tags user
+   * @name UserFindAll
+   * @summary Get all users paginated
+   * @request GET:/admin/user/find-all
+   * @secure
+   * @response `200` `UserFindAllData`
+   */
+  export namespace UserFindAll {
+    export type RequestParams = {};
+    export type RequestQuery = {
+      /** @default 1 */
+      page?: number;
+      /** @default 10 */
+      limit?: number;
+      search?: string;
+      enabled?: boolean;
+    };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = UserFindAllData;
+  }
+
+  /**
+   * No description
+   * @tags user
+   * @name UserFindOne
+   * @summary Get a user by ID
+   * @request GET:/admin/user/find-one/{id}
+   * @secure
+   * @response `200` `UserFindOneData`
+   */
+  export namespace UserFindOne {
+    export type RequestParams = {
+      id: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = UserFindOneData;
+  }
+
+  /**
+   * No description
+   * @tags user
+   * @name UserCreate
+   * @summary Create a user
+   * @request POST:/admin/user/create
+   * @secure
+   * @response `200` `UserCreateData`
+   */
+  export namespace UserCreate {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = UserCreateDto;
+    export type RequestHeaders = {};
+    export type ResponseBody = UserCreateData;
+  }
+
+  /**
+   * No description
+   * @tags user
+   * @name UserUpdate
+   * @summary Update a user
+   * @request PATCH:/admin/user/update/{id}
+   * @secure
+   * @response `200` `UserUpdateData`
+   */
+  export namespace UserUpdate {
+    export type RequestParams = {
+      id: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = UserUpdateDto;
+    export type RequestHeaders = {};
+    export type ResponseBody = UserUpdateData;
+  }
+
+  /**
+   * No description
+   * @tags user
+   * @name UserDelete
+   * @summary Delete a user
+   * @request DELETE:/admin/user/delete/{id}
+   * @secure
+   * @response `200` `UserDeleteData`
+   */
+  export namespace UserDelete {
+    export type RequestParams = {
+      id: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = UserDeleteData;
   }
 }
 
@@ -2795,6 +3431,365 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<BookDeleteBookImageData, any>({
         path: `/admin/book/image/delete/${id}`,
+        method: "DELETE",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  bookAuto = {
+    /**
+     * No description
+     *
+     * @tags book-auto
+     * @name BookAutoCaptureAmericanBigPicture
+     * @summary Capture flipbook pages as JPG screenshots using Playwright and stream via SSE
+     * @request GET:/admin/book-auto/american-big-picture
+     * @secure
+     * @response `200` `BookAutoCaptureAmericanBigPictureData` Stream de eventos conteniendo metadatos y capturas de páginas en base64
+     */
+    "book-autoCaptureAmericanBigPicture": (
+      query: BookAutoCaptureAmericanBigPictureParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<BookAutoCaptureAmericanBigPictureData, any>({
+        path: `/admin/book-auto/american-big-picture`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  agent = {
+    /**
+     * No description
+     *
+     * @tags agent
+     * @name AgentFindAllBots
+     * @summary Get all agents paginated
+     * @request GET:/admin/agent/find-all
+     * @secure
+     * @response `200` `AgentFindAllBotsData`
+     */
+    findAllBots: (
+      query: AgentFindAllBotsParams = {},
+      params: RequestParams = {},
+    ) =>
+      this.http.request<AgentFindAllBotsData, any>({
+        path: `/admin/agent/find-all`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags agent
+     * @name AgentFindOneBot
+     * @summary Get an agent by ID
+     * @request GET:/admin/agent/find-one/{id}
+     * @secure
+     * @response `200` `AgentFindOneBotData`
+     */
+    findOneBot: (
+      { id }: AgentFindOneBotParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<AgentFindOneBotData, any>({
+        path: `/admin/agent/find-one/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags agent
+     * @name AgentCreateBot
+     * @summary Create an agent
+     * @request POST:/admin/agent/create
+     * @secure
+     * @response `200` `AgentCreateBotData`
+     */
+    createBot: (data: BotCreateDto, params: RequestParams = {}) =>
+      this.http.request<AgentCreateBotData, any>({
+        path: `/admin/agent/create`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags agent
+     * @name AgentUpdateBot
+     * @summary Update an agent
+     * @request PATCH:/admin/agent/update/{id}
+     * @secure
+     * @response `200` `AgentUpdateBotData`
+     */
+    updateBot: (
+      { id }: AgentUpdateBotParams,
+      data: BotUpdateDto,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<AgentUpdateBotData, any>({
+        path: `/admin/agent/update/${id}`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags agent
+     * @name AgentDeleteBot
+     * @summary Delete an agent
+     * @request DELETE:/admin/agent/delete/{id}
+     * @secure
+     * @response `200` `AgentDeleteBotData`
+     */
+    deleteBot: (
+      { id }: AgentDeleteBotParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<AgentDeleteBotData, any>({
+        path: `/admin/agent/delete/${id}`,
+        method: "DELETE",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags agent
+     * @name AgentFindAllInstances
+     * @summary Get all WhatsApp instances paginated
+     * @request GET:/admin/agent/instance/find-all
+     * @secure
+     * @response `200` `AgentFindAllInstancesData`
+     */
+    findAllInstances: (
+      query: AgentFindAllInstancesParams = {},
+      params: RequestParams = {},
+    ) =>
+      this.http.request<AgentFindAllInstancesData, any>({
+        path: `/admin/agent/instance/find-all`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags agent
+     * @name AgentFindOneInstance
+     * @summary Get a WhatsApp instance by ID
+     * @request GET:/admin/agent/instance/find-one/{id}
+     * @secure
+     * @response `200` `AgentFindOneInstanceData`
+     */
+    findOneInstance: (
+      { id }: AgentFindOneInstanceParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<AgentFindOneInstanceData, any>({
+        path: `/admin/agent/instance/find-one/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags agent
+     * @name AgentCreateInstance
+     * @summary Create a WhatsApp instance
+     * @request POST:/admin/agent/instance/create
+     * @secure
+     * @response `200` `AgentCreateInstanceData`
+     */
+    createInstance: (
+      data: InstanceCreateDto,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<AgentCreateInstanceData, any>({
+        path: `/admin/agent/instance/create`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags agent
+     * @name AgentUpdateInstance
+     * @summary Update a WhatsApp instance
+     * @request PATCH:/admin/agent/instance/update/{id}
+     * @secure
+     * @response `200` `AgentUpdateInstanceData`
+     */
+    updateInstance: (
+      { id }: AgentUpdateInstanceParams,
+      data: InstanceUpdateDto,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<AgentUpdateInstanceData, any>({
+        path: `/admin/agent/instance/update/${id}`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags agent
+     * @name AgentDeleteInstance
+     * @summary Delete a WhatsApp instance
+     * @request DELETE:/admin/agent/instance/delete/{id}
+     * @secure
+     * @response `200` `AgentDeleteInstanceData`
+     */
+    deleteInstance: (
+      { id }: AgentDeleteInstanceParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<AgentDeleteInstanceData, any>({
+        path: `/admin/agent/instance/delete/${id}`,
+        method: "DELETE",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  user = {
+    /**
+     * No description
+     *
+     * @tags user
+     * @name UserFindAll
+     * @summary Get all users paginated
+     * @request GET:/admin/user/find-all
+     * @secure
+     * @response `200` `UserFindAllData`
+     */
+    findAll: (query: UserFindAllParams = {}, params: RequestParams = {}) =>
+      this.http.request<UserFindAllData, any>({
+        path: `/admin/user/find-all`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags user
+     * @name UserFindOne
+     * @summary Get a user by ID
+     * @request GET:/admin/user/find-one/{id}
+     * @secure
+     * @response `200` `UserFindOneData`
+     */
+    findOne: ({ id }: UserFindOneParams, params: RequestParams = {}) =>
+      this.http.request<UserFindOneData, any>({
+        path: `/admin/user/find-one/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags user
+     * @name UserCreate
+     * @summary Create a user
+     * @request POST:/admin/user/create
+     * @secure
+     * @response `200` `UserCreateData`
+     */
+    create: (data: UserCreateDto, params: RequestParams = {}) =>
+      this.http.request<UserCreateData, any>({
+        path: `/admin/user/create`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags user
+     * @name UserUpdate
+     * @summary Update a user
+     * @request PATCH:/admin/user/update/{id}
+     * @secure
+     * @response `200` `UserUpdateData`
+     */
+    update: (
+      { id }: UserUpdateParams,
+      data: UserUpdateDto,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<UserUpdateData, any>({
+        path: `/admin/user/update/${id}`,
+        method: "PATCH",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags user
+     * @name UserDelete
+     * @summary Delete a user
+     * @request DELETE:/admin/user/delete/{id}
+     * @secure
+     * @response `200` `UserDeleteData`
+     */
+    delete: ({ id }: UserDeleteParams, params: RequestParams = {}) =>
+      this.http.request<UserDeleteData, any>({
+        path: `/admin/user/delete/${id}`,
         method: "DELETE",
         secure: true,
         format: "json",
