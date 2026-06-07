@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { UserService } from '@service/user.service';
 import { ToastService } from '@service/toast.service';
 import { PATH, buildPath } from '@route/path.route';
-import { UserForm } from '../../../../layout/user-form/user-form';
+import { UserForm } from '../../layout/user-form/user-form';
 
 @Component({
   selector: 'app-user-edit',

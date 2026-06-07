@@ -6,7 +6,7 @@ import { ToastService } from '@service/toast.service';
 import { AlertService } from '@service/alert.service';
 import { PATH, buildPath } from '@route/path.route';
 import { ModalForm } from '../../../../components/modal-form/modal-form';
-import { UserForm } from '../../../../layout/user-form/user-form';
+import { UserForm } from '../../layout/user-form/user-form';
 
 @Component({
   selector: 'app-user-list',
