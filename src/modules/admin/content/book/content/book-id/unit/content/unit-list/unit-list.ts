@@ -8,10 +8,11 @@ import { BookTabs } from '../../../../../../../components/book-tabs/book-tabs';
 import { PATH, buildPath } from '@route/path.route';
 import { ModalForm } from '../../../../../../../components/modal-form/modal-form';
 import { UnitForm } from '../../layout/unit-form/unit-form';
+import { PaginationComponent } from '@module/admin/components/pagination/pagination';
 
 @Component({
   selector: 'app-unit-list',
-  imports: [CommonModule, ModalForm, BookTabs, UnitForm],
+  imports: [CommonModule, ModalForm, BookTabs, UnitForm, PaginationComponent],
   templateUrl: './unit-list.html',
 })
 export class UnitList implements OnInit {
@@ -28,6 +29,11 @@ export class UnitList implements OnInit {
   searchQuery = signal('');
   private searchTimeout: any;
 
+  // Pagination
+  currentPage = signal(1);
+  pageSize = signal(10);
+  meta = signal<any | null>(null);
+
   formComponent = viewChild<UnitForm>(UnitForm);
 
   ngOnInit() {
@@ -36,7 +42,10 @@ export class UnitList implements OnInit {
 
   loadItems() {
     this.loading.set(true);
-    const query: any = { page: 1, limit: 100 };
+    const query: any = {
+      page: this.currentPage(),
+      limit: this.pageSize(),
+    };
     if (this.bookId()) {
       query.bookId = +this.bookId()!;
     }
@@ -46,7 +55,13 @@ export class UnitList implements OnInit {
 
     // Call API
     this.bookService.list('units', query).then((res: any) => {
-      this.items.set(res.data ? res.data : (Array.isArray(res) ? res : []));
+      if (res && res.data) {
+        this.items.set(res.data);
+        this.meta.set(res.meta);
+      } else {
+        this.items.set(Array.isArray(res) ? res : []);
+        this.meta.set(null);
+      }
       this.loading.set(false);
     }).catch(err => {
       this.toastService.error('Error al cargar datos');
@@ -57,8 +72,20 @@ export class UnitList implements OnInit {
   onSearch(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.searchQuery.set(value);
+    this.currentPage.set(1);
     if (this.searchTimeout) clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => this.loadItems(), 400);
+  }
+
+  onPageChange(page: number) {
+    this.currentPage.set(page);
+    this.loadItems();
+  }
+
+  onPageSizeChange(newSize: number) {
+    this.pageSize.set(newSize);
+    this.currentPage.set(1);
+    this.loadItems();
   }
 
   openCreateModal() { this.showModal.set(true); }

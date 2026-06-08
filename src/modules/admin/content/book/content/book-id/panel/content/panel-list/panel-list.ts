@@ -8,10 +8,11 @@ import { BookTabs } from '../../../../../../../components/book-tabs/book-tabs';
 import { PATH, buildPath } from '@route/path.route';
 import { ModalForm } from '../../../../../../../components/modal-form/modal-form';
 import { PanelForm } from '../../layout/panel-form/panel-form';
+import { PaginationComponent } from '@module/admin/components/pagination/pagination';
 
 @Component({
   selector: 'app-panel-list',
-  imports: [CommonModule, ModalForm, BookTabs, PanelForm],
+  imports: [CommonModule, ModalForm, BookTabs, PanelForm, PaginationComponent],
   templateUrl: './panel-list.html',
 })
 export class PanelList implements OnInit {
@@ -28,6 +29,23 @@ export class PanelList implements OnInit {
   searchQuery = signal('');
   private searchTimeout: any;
 
+  // Pagination
+  currentPage = signal(1);
+  pageSize = signal(10);
+  meta = signal<any | null>(null);
+
+  zoomContent = signal<string | null>(null);
+  zoomTitle = signal<string>('');
+
+  openZoom(title: string, content: string) {
+    this.zoomTitle.set(title);
+    this.zoomContent.set(content);
+  }
+
+  closeZoom() {
+    this.zoomContent.set(null);
+  }
+
   formComponent = viewChild<PanelForm>(PanelForm);
 
   ngOnInit() {
@@ -36,7 +54,10 @@ export class PanelList implements OnInit {
 
   loadItems() {
     this.loading.set(true);
-    const query: any = { page: 1, limit: 100 };
+    const query: any = {
+      page: this.currentPage(),
+      limit: this.pageSize(),
+    };
     if (this.bookId()) {
       query.bookId = +this.bookId()!;
     }
@@ -46,7 +67,13 @@ export class PanelList implements OnInit {
 
     // Call API
     this.bookService.list('panels', query).then((res: any) => {
-      this.items.set(res.data ? res.data : (Array.isArray(res) ? res : []));
+      if (res && res.data) {
+        this.items.set(res.data);
+        this.meta.set(res.meta);
+      } else {
+        this.items.set(Array.isArray(res) ? res : []);
+        this.meta.set(null);
+      }
       this.loading.set(false);
     }).catch(err => {
       this.toastService.error('Error al cargar datos');
@@ -57,8 +84,20 @@ export class PanelList implements OnInit {
   onSearch(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.searchQuery.set(value);
+    this.currentPage.set(1);
     if (this.searchTimeout) clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => this.loadItems(), 400);
+  }
+
+  onPageChange(page: number) {
+    this.currentPage.set(page);
+    this.loadItems();
+  }
+
+  onPageSizeChange(newSize: number) {
+    this.pageSize.set(newSize);
+    this.currentPage.set(1);
+    this.loadItems();
   }
 
   openCreateModal() { this.showModal.set(true); }

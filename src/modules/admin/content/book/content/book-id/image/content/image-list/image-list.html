@@ -38,16 +38,46 @@
         <table class="w-full">
           <thead class="bg-text/5 border-b border-text/10">
             <tr>
-              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">ID</th>
-              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">Título</th>
-              <th class="px-4 py-3 text-right text-xs font-inter-bold text-text/60 uppercase tracking-wider">Acciones</th>
+              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider w-16">ID</th>
+              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider w-24">Miniatura</th>
+              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">Enlace</th>
+              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider w-32">Pág. Digital</th>
+              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider w-36">Meta Media ID</th>
+              <th class="px-4 py-3 text-right text-xs font-inter-bold text-text/60 uppercase tracking-wider w-24">Acciones</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-text/10">
             @for (item of items(); track item.id) {
               <tr class="hover:bg-text/5 transition-colors">
-                <td class="px-4 py-3 whitespace-nowrap"><span class="text-xs font-inter-semibold">{{ item.id }}</span></td>
-                <td class="px-4 py-3 whitespace-nowrap"><span class="text-xs font-inter-semibold">{{ item.title || item.url || '---' }}</span></td>
+                <td class="px-4 py-3 whitespace-nowrap"><span class="text-xs font-inter-semibold text-text/50">{{ item.id }}</span></td>
+                <td class="px-4 py-3 whitespace-nowrap">
+                  @if (item.url) {
+                    <a [href]="item.url" target="_blank" class="block cursor-pointer">
+                      <img [src]="item.url" class="w-10 h-10 object-cover rounded-lg border border-text/10 shadow-sm hover:scale-105 transition-transform" alt="Miniatura">
+                    </a>
+                  } @else {
+                    <div class="w-10 h-10 bg-text/5 rounded-lg border border-text/10 flex items-center justify-center text-text/25">
+                      <i class="fas fa-image text-sm"></i>
+                    </div>
+                  }
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap">
+                  <a [href]="item.url" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-secondary hover:underline font-inter-semibold" title="Ver imagen en tamaño completo">
+                    <i class="fas fa-external-link-alt text-secondary/70"></i> Ver Imagen
+                  </a>
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap">
+                  <span class="inline-flex items-center gap-1 text-xs font-inter-semibold text-secondary bg-secondary/5 px-2 py-0.5 rounded border border-secondary/15">
+                    <i class="fas fa-file-invoice text-[10px]"></i> Pág. {{ item.bookPage }}
+                  </span>
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap">
+                  @if (item.metaMediaId) {
+                    <code class="px-1.5 py-0.5 bg-text/5 border border-text/10 rounded text-[10px] font-mono text-text/80">{{ item.metaMediaId }}</code>
+                  } @else {
+                    <span class="text-xs text-text/30 italic">No asociado</span>
+                  }
+                </td>
                 <td class="px-4 py-3 whitespace-nowrap text-right">
                   <div class="flex items-center justify-end gap-1">
                     <button (click)="navigateToEdit(item.id)" class="p-1.5 text-info hover:bg-info/10 rounded-lg transition-colors text-sm" title="Editar"><i class="fas fa-edit"></i></button>
@@ -59,6 +89,15 @@
           </tbody>
         </table>
       </div>
+      
+      <!-- Paginación -->
+      <app-pagination
+        [meta]="meta()"
+        [currentPage]="currentPage()"
+        [pageSize]="pageSize()"
+        (pageChange)="onPageChange($event)"
+        (pageSizeChange)="onPageSizeChange($event)"
+      />
     }
   </div>
 </div>

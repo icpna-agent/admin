@@ -8,10 +8,11 @@ import { BookTabs } from '../../../../../../../components/book-tabs/book-tabs';
 import { PATH, buildPath } from '@route/path.route';
 import { ModalForm } from '../../../../../../../components/modal-form/modal-form';
 import { AudioForm } from '../../layout/audio-form/audio-form';
+import { PaginationComponent } from '@module/admin/components/pagination/pagination';
 
 @Component({
   selector: 'app-audio-list',
-  imports: [CommonModule, ModalForm, BookTabs, AudioForm],
+  imports: [CommonModule, ModalForm, BookTabs, AudioForm, PaginationComponent],
   templateUrl: './audio-list.html',
 })
 export class AudioList implements OnInit {
@@ -28,6 +29,24 @@ export class AudioList implements OnInit {
   searchQuery = signal('');
   private searchTimeout: any;
 
+  // Pagination
+  currentPage = signal(1);
+  pageSize = signal(10);
+  meta = signal<any | null>(null);
+
+  // Zoom Modal
+  zoomContent = signal<string | null>(null);
+  zoomTitle = signal<string>('');
+
+  openZoom(title: string, content: string) {
+    this.zoomTitle.set(title);
+    this.zoomContent.set(content);
+  }
+
+  closeZoom() {
+    this.zoomContent.set(null);
+  }
+
   formComponent = viewChild<AudioForm>(AudioForm);
 
   ngOnInit() {
@@ -36,7 +55,10 @@ export class AudioList implements OnInit {
 
   loadItems() {
     this.loading.set(true);
-    const query: any = { page: 1, limit: 100 };
+    const query: any = {
+      page: this.currentPage(),
+      limit: this.pageSize(),
+    };
     if (this.bookId()) {
       query.bookId = +this.bookId()!;
     }
@@ -46,7 +68,13 @@ export class AudioList implements OnInit {
 
     // Call API
     this.bookService.list('audios', query).then((res: any) => {
-      this.items.set(res.data ? res.data : (Array.isArray(res) ? res : []));
+      if (res && res.data) {
+        this.items.set(res.data);
+        this.meta.set(res.meta);
+      } else {
+        this.items.set(Array.isArray(res) ? res : []);
+        this.meta.set(null);
+      }
       this.loading.set(false);
     }).catch(err => {
       this.toastService.error('Error al cargar datos');
@@ -57,8 +85,20 @@ export class AudioList implements OnInit {
   onSearch(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     this.searchQuery.set(value);
+    this.currentPage.set(1);
     if (this.searchTimeout) clearTimeout(this.searchTimeout);
     this.searchTimeout = setTimeout(() => this.loadItems(), 400);
+  }
+
+  onPageChange(page: number) {
+    this.currentPage.set(page);
+    this.loadItems();
+  }
+
+  onPageSizeChange(newSize: number) {
+    this.pageSize.set(newSize);
+    this.currentPage.set(1);
+    this.loadItems();
   }
 
   openCreateModal() { this.showModal.set(true); }

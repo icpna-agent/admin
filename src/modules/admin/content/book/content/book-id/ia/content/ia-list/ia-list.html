@@ -119,6 +119,22 @@
             <span class="font-inter-regular text-text/50 text-[11px]">Listo para iniciar el asistente de digitalización.</span>
           }
         </div>
+
+        @if (!loading() && capturedPages().length > 0) {
+          <div class="pt-2">
+            <button (click)="registerAllData()"
+                    [disabled]="isRegistering()"
+                    class="w-full py-2 bg-secondary text-background hover:bg-secondary/90 disabled:opacity-50 text-xs font-inter-bold rounded-lg shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5">
+              @if (isRegistering()) {
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Registrando Datos...</span>
+              } @else {
+                <i class="fas fa-database"></i>
+                <span>Registrar Datos</span>
+              }
+            </button>
+          </div>
+        }
       </div>
     </div>
 
@@ -140,7 +156,7 @@
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
             @for (page of capturedPages(); track page.fileName) {
               <div (click)="openModal(page)"
-                   class="group bg-surface border border-text/10 rounded-xl overflow-hidden shadow-sm hover:border-secondary hover:shadow-md transition-all duration-300 cursor-pointer">
+                   class="group bg-surface border border-text/10 rounded-xl overflow-hidden shadow-sm hover:border-secondary hover:shadow-md transition-all duration-300 cursor-pointer flex flex-col">
                 <!-- Imagen con efecto hover de Zoom -->
                 <div class="relative aspect-[3/4] bg-background overflow-hidden flex items-center justify-center">
                   <img [src]="page.dataUrl" 
@@ -159,27 +175,65 @@
                 </div>
 
                 <!-- Datos de Página -->
-                <div class="p-3 bg-text/5 border-t border-text/10 flex flex-col gap-1.5 justify-center min-h-[56px]">
-                  @if (page.realPage === 1) {
-                    <div class="flex items-center justify-between w-full">
-                      <div class="flex flex-wrap gap-1">
-                        <span class="bg-primary/10 text-primary border border-primary/20 text-[9px] font-inter-bold px-1.5 py-0.5 rounded uppercase tracking-wider">Índice</span>
-                        <span class="bg-success/10 text-success border border-success/20 text-[9px] font-inter-bold px-1.5 py-0.5 rounded uppercase tracking-wider">Unidades</span>
-                      </div>
-                      <span class="text-success text-[10px] font-inter-medium" title="Capturada"><i class="fas fa-check-circle"></i></span>
+                <div class="p-3 bg-text/5 border-t border-text/10 flex flex-col gap-1.5 justify-center min-h-[56px] flex-1">
+                  <div class="flex items-center justify-between w-full">
+                    <div class="flex flex-wrap gap-1">
+                      @for (badge of page.badges; track badge) {
+                        @if (badge === 'index') {
+                          <span class="bg-primary/10 text-primary border border-primary/20 text-[9px] font-inter-bold px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-1 select-none">
+                            Índice
+                            <button type="button" (click)="removeBadge(page, 'index', $event)" class="hover:text-danger cursor-pointer flex items-center"><i class="fas fa-times text-[8px]"></i></button>
+                          </span>
+                        } @else if (badge === 'unit') {
+                          <span class="bg-success/10 text-success border border-success/20 text-[9px] font-inter-bold px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-1 select-none">
+                            Unidades
+                            <button type="button" (click)="removeBadge(page, 'unit', $event)" class="hover:text-danger cursor-pointer flex items-center"><i class="fas fa-times text-[8px]"></i></button>
+                          </span>
+                        } @else if (badge === 'lesson') {
+                          <span class="bg-purple-600/10 text-purple-600 dark:text-purple-400 border border-purple-600/20 text-[9px] font-inter-bold px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-1 select-none">
+                            Lecciones
+                            <button type="button" (click)="removeBadge(page, 'lesson', $event)" class="hover:text-danger cursor-pointer flex items-center"><i class="fas fa-times text-[8px]"></i></button>
+                          </span>
+                        } @else if (badge === 'panel') {
+                          <span class="bg-warning/10 text-warning border border-warning/20 text-[9px] font-inter-bold px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-1 select-none">
+                            Paneles
+                            <button type="button" (click)="removeBadge(page, 'panel', $event)" class="hover:text-danger cursor-pointer flex items-center"><i class="fas fa-times text-[8px]"></i></button>
+                          </span>
+                        } @else if (badge === 'audio') {
+                          <span class="bg-rose-600/10 text-rose-600 dark:text-rose-400 border border-rose-600/20 text-[9px] font-inter-bold px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-1 select-none">
+                            Audios
+                            <button type="button" (click)="removeBadge(page, 'audio', $event)" class="hover:text-danger cursor-pointer flex items-center"><i class="fas fa-times text-[8px]"></i></button>
+                          </span>
+                        }
+                      }
+                      @if (page.badges.length === 0) {
+                        <span class="text-text/40 text-[9px] font-inter-semibold uppercase tracking-wider select-none">Sin Elementos</span>
+                      }
                     </div>
-                  } @else if (page.realPage >= 2 && page.realPage <= 31) {
-                    <div class="flex items-center justify-between w-full">
-                      <div class="flex flex-wrap gap-1">
-                        <span class="bg-secondary/10 text-secondary border border-secondary/20 text-[9px] font-inter-bold px-1.5 py-0.5 rounded uppercase tracking-wider">Lecciones</span>
-                        <span class="bg-warning/10 text-warning border border-warning/20 text-[9px] font-inter-bold px-1.5 py-0.5 rounded uppercase tracking-wider">Paneles</span>
+                    <!-- Estado de Procesamiento de IA -->
+                    @if (page.status === 'waiting') {
+                      <span class="text-text/30 text-[10px] font-inter-medium animate-pulse" title="Esperando turno para procesamiento de IA..."><i class="fas fa-clock"></i></span>
+                    } @else if (page.status === 'processing') {
+                      <span class="text-secondary text-[10px] font-inter-medium" title="Procesando IA y cargando recursos..."><i class="fas fa-spinner fa-spin"></i></span>
+                    } @else if (page.status === 'completed') {
+                      <span class="text-success text-[10px] font-inter-medium" title="Registro IA Completado"><i class="fas fa-check-circle"></i></span>
+                    } @else if (page.status === 'failed') {
+                      <div class="flex items-center gap-1.5">
+                        <span class="text-danger text-[10px] font-inter-medium" [title]="page.statusText || 'Error en procesamiento IA'"><i class="fas fa-exclamation-triangle"></i></span>
+                        <button type="button" (click)="retryPageIa(page, $event)" class="text-secondary hover:text-secondary/80 text-[10px] cursor-pointer flex items-center" title="Reintentar"><i class="fas fa-sync-alt"></i></button>
                       </div>
+                    } @else {
                       <span class="text-success text-[10px] font-inter-medium" title="Capturada"><i class="fas fa-check-circle"></i></span>
-                    </div>
-                  } @else {
-                    <div class="flex items-center justify-between w-full">
-                      <span class="text-text/40 text-[9px] font-inter-semibold uppercase tracking-wider">Sin Elementos</span>
-                      <span class="text-success text-[10px] font-inter-medium" title="Capturada"><i class="fas fa-check-circle"></i></span>
+                    }
+                  </div>
+
+                  <!-- Texto de progreso del proceso de IA -->
+                  @if (page.status && page.status !== 'completed') {
+                    <div class="text-[9px] font-inter-medium leading-tight truncate max-w-full mt-1"
+                         [class.text-text/40]="page.status === 'waiting'"
+                         [class.text-secondary]="page.status === 'processing'"
+                         [class.text-danger]="page.status === 'failed'">
+                      {{ page.statusText || 'Procesando...' }}
                     </div>
                   }
                 </div>
@@ -201,12 +255,12 @@
       
       <!-- Cabecera del Modal -->
       <div class="flex items-center justify-between px-4 py-3 border-b border-text/10 bg-surface/50 backdrop-blur-sm">
-        <div class="flex flex-col">
+        <div class="flex flex-col gap-1 w-full mr-4">
           <span class="text-xs font-inter-bold text-text truncate max-w-[250px] sm:max-w-md" [title]="page.fileName">
             {{ page.fileName }}
           </span>
-          <div class="flex gap-3 text-[10px] text-text/50 font-inter-medium mt-0.5">
-            <span>Página Real: {{ page.realPage }}</span>
+          <div class="flex gap-2 text-[10px] text-text/50 font-inter-medium">
+            <span>Pág. Real: {{ page.realPage }}</span>
             <span>•</span>
             <span>DOM: #page{{ page.domPage }}</span>
           </div>
@@ -252,9 +306,71 @@
       </div>
 
       <!-- Pie de página del Modal (Paginación / Indicador) -->
-      <div class="flex items-center justify-between px-4 py-2.5 border-t border-text/10 bg-surface/50 text-[11px] text-text/50 font-inter-semibold">
-        <span>Imagen {{ selectedPageIndex() + 1 }} de {{ capturedPages().length }}</span>
-        <span class="hidden sm:inline">Usa las flechas ← → de tu teclado para navegar</span>
+      <div class="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 border-t border-text/10 bg-surface/50 text-[11px] text-text/50 font-inter-semibold">
+        <div class="flex items-center gap-2">
+          <span>Pág. {{ selectedPageIndex() + 1 }} de {{ capturedPages().length }}</span>
+          @if (page.status) {
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[8px] font-inter-bold uppercase tracking-wide select-none"
+                  [class.bg-text/5]="page.status === 'waiting'"
+                  [class.text-text/50]="page.status === 'waiting'"
+                  [class.bg-secondary/10]="page.status === 'processing'"
+                  [class.text-secondary]="page.status === 'processing'"
+                  [class.bg-success/10]="page.status === 'completed'"
+                  [class.text-success]="page.status === 'completed'"
+                  [class.bg-danger/10]="page.status === 'failed'"
+                  [class.text-danger]="page.status === 'failed'"
+                  [title]="page.statusText || ''">
+              @if (page.status === 'processing') {
+                <i class="fas fa-spinner fa-spin mr-0.5"></i>
+              }
+              {{ page.status === 'waiting' ? 'En cola' : page.status === 'processing' ? 'Procesando' : page.status === 'completed' ? 'Completado' : 'Fallido' }}
+            </span>
+          }
+        </div>
+        
+        <div class="flex flex-wrap items-center gap-1">
+          @for (badge of page.badges; track badge) {
+            @if (badge === 'index') {
+              <span class="bg-primary/10 text-primary border border-primary/20 text-[9px] font-inter-bold px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-1 select-none">
+                Índice
+                <button type="button" (click)="removeBadge(page, 'index')" class="hover:text-danger cursor-pointer flex items-center"><i class="fas fa-times text-[8px]"></i></button>
+              </span>
+            } @else if (badge === 'unit') {
+              <span class="bg-success/10 text-success border border-success/20 text-[9px] font-inter-bold px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-1 select-none">
+                Unidades
+                <button type="button" (click)="removeBadge(page, 'unit')" class="hover:text-danger cursor-pointer flex items-center"><i class="fas fa-times text-[8px]"></i></button>
+              </span>
+            } @else if (badge === 'lesson') {
+              <span class="bg-purple-600/10 text-purple-600 dark:text-purple-400 border border-purple-600/20 text-[9px] font-inter-bold px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-1 select-none">
+                Lecciones
+                <button type="button" (click)="removeBadge(page, 'lesson')" class="hover:text-danger cursor-pointer flex items-center"><i class="fas fa-times text-[8px]"></i></button>
+              </span>
+            } @else if (badge === 'panel') {
+              <span class="bg-warning/10 text-warning border border-warning/20 text-[9px] font-inter-bold px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-1 select-none">
+                Paneles
+                <button type="button" (click)="removeBadge(page, 'panel')" class="hover:text-danger cursor-pointer flex items-center"><i class="fas fa-times text-[8px]"></i></button>
+              </span>
+            } @else if (badge === 'audio') {
+              <span class="bg-rose-600/10 text-rose-600 dark:text-rose-400 border border-rose-600/20 text-[9px] font-inter-bold px-1.5 py-0.5 rounded uppercase tracking-wider flex items-center gap-1 select-none">
+                Audios
+                <button type="button" (click)="removeBadge(page, 'audio')" class="hover:text-danger cursor-pointer flex items-center"><i class="fas fa-times text-[8px]"></i></button>
+              </span>
+            }
+          }
+          
+          <!-- Select dropdown to add badge -->
+          <select 
+            (change)="onBadgeSelectChange($event, page)"
+            class="bg-text/5 border border-text/10 rounded px-1.5 py-0.5 text-[9px] font-inter-semibold text-text outline-none focus:border-secondary cursor-pointer"
+          >
+            <option value="" selected disabled>+ Añadir...</option>
+            <option value="index" [disabled]="page.badges.includes('index')">Índice</option>
+            <option value="unit" [disabled]="page.badges.includes('unit')">Unidades</option>
+            <option value="lesson" [disabled]="page.badges.includes('lesson')">Lecciones</option>
+            <option value="panel" [disabled]="page.badges.includes('panel')">Paneles</option>
+            <option value="audio" [disabled]="page.badges.includes('audio')">Audios</option>
+          </select>
+        </div>
       </div>
     </div>
   </div>

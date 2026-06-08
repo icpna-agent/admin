@@ -60,6 +60,7 @@ export interface BookResultDto {
   updatedAt: string;
   /** @format date-time */
   deletedAt?: string | null;
+  urlPreview?: string | null;
 }
 
 export interface PaginationMetaDto {
@@ -105,6 +106,8 @@ export interface BookCreateDto {
    * @example true
    */
   active: boolean;
+  /** @example "https://duxebhp63ladi.cloudfront.net/americanbigpicture/flipbook/b1p/abp8b1p_sb/index.html" */
+  urlPreview?: string;
 }
 
 export interface BookUpdateDto {
@@ -136,6 +139,8 @@ export interface BookUpdateDto {
    * @example true
    */
   active?: boolean;
+  /** @example "https://duxebhp63ladi.cloudfront.net/americanbigpicture/flipbook/b1p/abp8b1p_sb/index.html" */
+  urlPreview?: string;
 }
 
 export interface BookIndexResultDto {
@@ -576,6 +581,108 @@ export interface BookCaptureEventDto {
   data: object;
 }
 
+export interface InsertIaDto {
+  /**
+   * ID del libro
+   * @example 1
+   */
+  bookId: number;
+  /**
+   * Número de la página real del libro
+   * @example 2
+   */
+  bookPage: number;
+  /**
+   * Imagen de la página en base64
+   * @example "data:image/jpeg;base64,..."
+   */
+  image: string;
+  /**
+   * Badges/elementos a analizar e insertar
+   * @example ["lesson","panel"]
+   */
+  badges: string[];
+}
+
+export interface FileUploadDto {
+  /**
+   * Archivo de imagen a subir
+   * @format binary
+   */
+  file: File;
+}
+
+export interface FreeImageFileDto {
+  filename: string;
+  name: string;
+  mime: string;
+  extension: string;
+  url: string;
+  size?: number;
+}
+
+export interface FreeImageResultDto {
+  name: string;
+  extension: string;
+  width: number;
+  height: number;
+  size: number;
+  time: number;
+  expiration: number;
+  likes: number;
+  description?: string | null;
+  original_filename: string;
+  is_animated: number;
+  id_encoded: string;
+  extension_name: string;
+  size_formatted: string;
+  filename: string;
+  url: string;
+  url_short: string;
+  url_seo: string;
+  url_viewer: string;
+  url_viewer_preview: string;
+  url_viewer_thumb: string;
+  image: FreeImageFileDto;
+  thumb: FreeImageFileDto;
+  medium: FreeImageFileDto;
+  display_url: string;
+  display_width: number;
+  display_height: number;
+  views_label: string;
+  likes_label: string;
+  how_long_ago: string;
+  date_fixed_peer: string;
+  title: string;
+  title_truncated: string;
+  title_truncated_html: string;
+  is_use_loader: boolean;
+}
+
+export interface UploadResultDto {
+  success: boolean;
+  data: FreeImageResultDto;
+}
+
+export interface UploadImageMetaResultDto {
+  success: boolean;
+  url: string;
+  metaMediaId: string;
+}
+
+export interface UploadAudioUrlDto {
+  /**
+   * URL pública del archivo de audio que se descargará y subirá a Meta
+   * @example "https://duxebhp63ladi.cloudfront.net/americanbigpicture/flipbook/b1p/abp6b1p_sb/files/SlidePage/190213150917177.mp3"
+   */
+  url: string;
+}
+
+export interface UploadAudioMetaResultDto {
+  success: boolean;
+  metaMediaId: string;
+}
+
 export interface BookPreviewDto {
   /**
    * Imagen en formato Base64 o URL
@@ -754,85 +861,6 @@ export interface UserDeleteResultDto {
   success: boolean;
 }
 
-export interface FileUploadDto {
-  /**
-   * Archivo de imagen a subir
-   * @format binary
-   */
-  file: File;
-}
-
-export interface FreeImageFileDto {
-  filename: string;
-  name: string;
-  mime: string;
-  extension: string;
-  url: string;
-  size?: number;
-}
-
-export interface FreeImageResultDto {
-  name: string;
-  extension: string;
-  width: number;
-  height: number;
-  size: number;
-  time: number;
-  expiration: number;
-  likes: number;
-  description?: string | null;
-  original_filename: string;
-  is_animated: number;
-  id_encoded: string;
-  extension_name: string;
-  size_formatted: string;
-  filename: string;
-  url: string;
-  url_short: string;
-  url_seo: string;
-  url_viewer: string;
-  url_viewer_preview: string;
-  url_viewer_thumb: string;
-  image: FreeImageFileDto;
-  thumb: FreeImageFileDto;
-  medium: FreeImageFileDto;
-  display_url: string;
-  display_width: number;
-  display_height: number;
-  views_label: string;
-  likes_label: string;
-  how_long_ago: string;
-  date_fixed_peer: string;
-  title: string;
-  title_truncated: string;
-  title_truncated_html: string;
-  is_use_loader: boolean;
-}
-
-export interface UploadResultDto {
-  success: boolean;
-  data: FreeImageResultDto;
-}
-
-export interface UploadImageMetaResultDto {
-  success: boolean;
-  url: string;
-  metaMediaId: string;
-}
-
-export interface UploadAudioUrlDto {
-  /**
-   * URL pública del archivo de audio que se descargará y subirá a Meta
-   * @example "https://duxebhp63ladi.cloudfront.net/americanbigpicture/flipbook/b1p/abp6b1p_sb/files/SlidePage/190213150917177.mp3"
-   */
-  url: string;
-}
-
-export interface UploadAudioMetaResultDto {
-  success: boolean;
-  metaMediaId: string;
-}
-
 export type AppGetHelloData = any;
 
 export interface EngineVerifyWebhookParams {
@@ -843,7 +871,7 @@ export interface EngineVerifyWebhookParams {
 
 export type EngineVerifyWebhookData = any;
 
-/** @example {"object":"whatsapp_business_account","entry":[{"id":"431ed1e4-68d0-4dfb-ad58-2ed4b6624a68","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"51936081148","phone_number_id":"756536844216424"},"contacts":[{"profile":{"name":"Santos Cachorros"},"wa_id":"1443782653529215"}],"messages":[{"from":"51929073820","id":"06c0aaa1-1694-4945-85e7-00a809ff33ba","timestamp":"1780858358334","text":{"body":"<MESSAGE_BODY_TEXT>"},"type":"text"}]},"field":"messages"}]}]} */
+/** @example {"object":"whatsapp_business_account","entry":[{"id":"3ac01333-459d-443c-8139-5c2b3e758e96","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"51936081148","phone_number_id":"756536844216424"},"contacts":[{"profile":{"name":"Santos Cachorros"},"wa_id":"1443782653529215"}],"messages":[{"from":"51929073820","id":"f6aac6b9-7359-4c3e-b7d7-d75190fb68ca","timestamp":"1780932792536","text":{"body":"<MESSAGE_BODY_TEXT>"},"type":"text"}]},"field":"messages"}]}]} */
 export type EngineRunFlowProductionPayload = any;
 
 export type EngineRunFlowProductionData = any;
@@ -1139,6 +1167,14 @@ export interface BookAutoCaptureAmericanBigPictureParams {
 
 export type BookAutoCaptureAmericanBigPictureData = BookCaptureEventDto;
 
+export type BookAutoInsertIaData = any;
+
+export type StorageUploadFileData = UploadResultDto;
+
+export type StorageUploadImageToMetaData = UploadImageMetaResultDto;
+
+export type StorageUploadAudioUrlToMetaData = UploadAudioMetaResultDto;
+
 export type BookAiPreviewBookIndexData = BookIndexCreateDto[];
 
 export type BookAiPreviewBookUnitData = BookUnitCreateDto[];
@@ -1146,6 +1182,8 @@ export type BookAiPreviewBookUnitData = BookUnitCreateDto[];
 export type BookAiPreviewBookLessonData = BookLessonCreateDto[];
 
 export type BookAiPreviewBookPanelData = BookPanelCreateDto[];
+
+export type BookAiPreviewBookAudioData = BookAudioCreateDto[];
 
 export interface AgentFindAllBotsParams {
   /** @default 1 */
@@ -1239,12 +1277,6 @@ export interface UserDeleteParams {
 }
 
 export type UserDeleteData = UserDeleteResultDto;
-
-export type StorageUploadFileData = UploadResultDto;
-
-export type StorageUploadImageToMetaData = UploadImageMetaResultDto;
-
-export type StorageUploadAudioUrlToMetaData = UploadAudioMetaResultDto;
 
 export namespace App {
   /**
@@ -2093,6 +2125,76 @@ export namespace BookAuto {
     export type RequestHeaders = {};
     export type ResponseBody = BookAutoCaptureAmericanBigPictureData;
   }
+
+  /**
+   * No description
+   * @tags book-auto
+   * @name BookAutoInsertIa
+   * @summary Sube imagen de la página, la registra, e identifica/guarda elementos mediante IA streaming de progreso SSE
+   * @request POST:/admin/book-auto/insert-ia
+   * @secure
+   * @response `200` `BookAutoInsertIaData` Stream de eventos de progreso en el registro
+   */
+  export namespace BookAutoInsertIa {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = InsertIaDto;
+    export type RequestHeaders = {};
+    export type ResponseBody = BookAutoInsertIaData;
+  }
+}
+
+export namespace Storage {
+  /**
+   * No description
+   * @tags storage
+   * @name StorageUploadFile
+   * @summary Sube una imagen al proveedor externo freeimage.host
+   * @request POST:/admin/storage/upload
+   * @secure
+   * @response `200` `StorageUploadFileData` Imagen subida exitosamente
+   */
+  export namespace StorageUploadFile {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = FileUploadDto;
+    export type RequestHeaders = {};
+    export type ResponseBody = StorageUploadFileData;
+  }
+
+  /**
+   * No description
+   * @tags storage
+   * @name StorageUploadImageToMeta
+   * @summary Sube una imagen a freeimage.host y luego a Meta, devolviendo el ID de Meta
+   * @request POST:/admin/storage/upload-image-to-meta
+   * @secure
+   * @response `200` `StorageUploadImageToMetaData` Imagen subida exitosamente a Meta
+   */
+  export namespace StorageUploadImageToMeta {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = FileUploadDto;
+    export type RequestHeaders = {};
+    export type ResponseBody = StorageUploadImageToMetaData;
+  }
+
+  /**
+   * No description
+   * @tags storage
+   * @name StorageUploadAudioUrlToMeta
+   * @summary Descarga un audio desde una URL y lo sube a Meta, devolviendo el ID de Meta
+   * @request POST:/admin/storage/upload-audio-url-to-meta
+   * @secure
+   * @response `200` `StorageUploadAudioUrlToMetaData` Audio subido exitosamente a Meta
+   */
+  export namespace StorageUploadAudioUrlToMeta {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = UploadAudioUrlDto;
+    export type RequestHeaders = {};
+    export type ResponseBody = StorageUploadAudioUrlToMetaData;
+  }
 }
 
 export namespace BookAi {
@@ -2162,6 +2264,23 @@ export namespace BookAi {
     export type RequestBody = BookPreviewDto;
     export type RequestHeaders = {};
     export type ResponseBody = BookAiPreviewBookPanelData;
+  }
+
+  /**
+   * No description
+   * @tags book-ai
+   * @name BookAiPreviewBookAudio
+   * @summary Analiza una imagen de página y devuelve una lista de posibles inserts para book_audio
+   * @request POST:/admin/book-ai/preview-book-audio
+   * @secure
+   * @response `200` `BookAiPreviewBookAudioData` Arreglo de posibles inserciones para la tabla book_audio
+   */
+  export namespace BookAiPreviewBookAudio {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = BookPreviewDto;
+    export type RequestHeaders = {};
+    export type ResponseBody = BookAiPreviewBookAudioData;
   }
 }
 
@@ -2460,59 +2579,6 @@ export namespace User {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = UserDeleteData;
-  }
-}
-
-export namespace Storage {
-  /**
-   * No description
-   * @tags storage
-   * @name StorageUploadFile
-   * @summary Sube una imagen al proveedor externo freeimage.host
-   * @request POST:/admin/storage/upload
-   * @secure
-   * @response `200` `StorageUploadFileData` Imagen subida exitosamente
-   */
-  export namespace StorageUploadFile {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = FileUploadDto;
-    export type RequestHeaders = {};
-    export type ResponseBody = StorageUploadFileData;
-  }
-
-  /**
-   * No description
-   * @tags storage
-   * @name StorageUploadImageToMeta
-   * @summary Sube una imagen a freeimage.host y luego a Meta, devolviendo el ID de Meta
-   * @request POST:/admin/storage/upload-image-to-meta
-   * @secure
-   * @response `200` `StorageUploadImageToMetaData` Imagen subida exitosamente a Meta
-   */
-  export namespace StorageUploadImageToMeta {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = FileUploadDto;
-    export type RequestHeaders = {};
-    export type ResponseBody = StorageUploadImageToMetaData;
-  }
-
-  /**
-   * No description
-   * @tags storage
-   * @name StorageUploadAudioUrlToMeta
-   * @summary Descarga un audio desde una URL y lo sube a Meta, devolviendo el ID de Meta
-   * @request POST:/admin/storage/upload-audio-url-to-meta
-   * @secure
-   * @response `200` `StorageUploadAudioUrlToMetaData` Audio subido exitosamente a Meta
-   */
-  export namespace StorageUploadAudioUrlToMeta {
-    export type RequestParams = {};
-    export type RequestQuery = {};
-    export type RequestBody = UploadAudioUrlDto;
-    export type RequestHeaders = {};
-    export type ResponseBody = StorageUploadAudioUrlToMetaData;
   }
 }
 
@@ -3694,6 +3760,96 @@ export class Api<SecurityDataType extends unknown> {
         format: "json",
         ...params,
       }),
+
+    /**
+     * No description
+     *
+     * @tags book-auto
+     * @name BookAutoInsertIa
+     * @summary Sube imagen de la página, la registra, e identifica/guarda elementos mediante IA streaming de progreso SSE
+     * @request POST:/admin/book-auto/insert-ia
+     * @secure
+     * @response `200` `BookAutoInsertIaData` Stream de eventos de progreso en el registro
+     */
+    "book-autoInsertIa": (data: InsertIaDto, params: RequestParams = {}) =>
+      this.http.request<BookAutoInsertIaData, any>({
+        path: `/admin/book-auto/insert-ia`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+  };
+  storage = {
+    /**
+     * No description
+     *
+     * @tags storage
+     * @name StorageUploadFile
+     * @summary Sube una imagen al proveedor externo freeimage.host
+     * @request POST:/admin/storage/upload
+     * @secure
+     * @response `200` `StorageUploadFileData` Imagen subida exitosamente
+     */
+    uploadFile: (data: FileUploadDto, params: RequestParams = {}) =>
+      this.http.request<StorageUploadFileData, any>({
+        path: `/admin/storage/upload`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.FormData,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags storage
+     * @name StorageUploadImageToMeta
+     * @summary Sube una imagen a freeimage.host y luego a Meta, devolviendo el ID de Meta
+     * @request POST:/admin/storage/upload-image-to-meta
+     * @secure
+     * @response `200` `StorageUploadImageToMetaData` Imagen subida exitosamente a Meta
+     */
+    uploadImageToMeta: (
+      data: FileUploadDto,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<StorageUploadImageToMetaData, any>({
+        path: `/admin/storage/upload-image-to-meta`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.FormData,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags storage
+     * @name StorageUploadAudioUrlToMeta
+     * @summary Descarga un audio desde una URL y lo sube a Meta, devolviendo el ID de Meta
+     * @request POST:/admin/storage/upload-audio-url-to-meta
+     * @secure
+     * @response `200` `StorageUploadAudioUrlToMetaData` Audio subido exitosamente a Meta
+     */
+    uploadAudioUrlToMeta: (
+      data: UploadAudioUrlDto,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<StorageUploadAudioUrlToMetaData, any>({
+        path: `/admin/storage/upload-audio-url-to-meta`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
   };
   bookAi = {
     /**
@@ -3784,6 +3940,30 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<BookAiPreviewBookPanelData, any>({
         path: `/admin/book-ai/preview-book-panel`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags book-ai
+     * @name BookAiPreviewBookAudio
+     * @summary Analiza una imagen de página y devuelve una lista de posibles inserts para book_audio
+     * @request POST:/admin/book-ai/preview-book-audio
+     * @secure
+     * @response `200` `BookAiPreviewBookAudioData` Arreglo de posibles inserciones para la tabla book_audio
+     */
+    "book-aiPreviewBookAudio": (
+      data: BookPreviewDto,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<BookAiPreviewBookAudioData, any>({
+        path: `/admin/book-ai/preview-book-audio`,
         method: "POST",
         body: data,
         secure: true,
@@ -4123,76 +4303,6 @@ export class Api<SecurityDataType extends unknown> {
         path: `/admin/user/delete/${id}`,
         method: "DELETE",
         secure: true,
-        format: "json",
-        ...params,
-      }),
-  };
-  storage = {
-    /**
-     * No description
-     *
-     * @tags storage
-     * @name StorageUploadFile
-     * @summary Sube una imagen al proveedor externo freeimage.host
-     * @request POST:/admin/storage/upload
-     * @secure
-     * @response `200` `StorageUploadFileData` Imagen subida exitosamente
-     */
-    uploadFile: (data: FileUploadDto, params: RequestParams = {}) =>
-      this.http.request<StorageUploadFileData, any>({
-        path: `/admin/storage/upload`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.FormData,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags storage
-     * @name StorageUploadImageToMeta
-     * @summary Sube una imagen a freeimage.host y luego a Meta, devolviendo el ID de Meta
-     * @request POST:/admin/storage/upload-image-to-meta
-     * @secure
-     * @response `200` `StorageUploadImageToMetaData` Imagen subida exitosamente a Meta
-     */
-    uploadImageToMeta: (
-      data: FileUploadDto,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<StorageUploadImageToMetaData, any>({
-        path: `/admin/storage/upload-image-to-meta`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.FormData,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags storage
-     * @name StorageUploadAudioUrlToMeta
-     * @summary Descarga un audio desde una URL y lo sube a Meta, devolviendo el ID de Meta
-     * @request POST:/admin/storage/upload-audio-url-to-meta
-     * @secure
-     * @response `200` `StorageUploadAudioUrlToMetaData` Audio subido exitosamente a Meta
-     */
-    uploadAudioUrlToMeta: (
-      data: UploadAudioUrlDto,
-      params: RequestParams = {},
-    ) =>
-      this.http.request<StorageUploadAudioUrlToMetaData, any>({
-        path: `/admin/storage/upload-audio-url-to-meta`,
-        method: "POST",
-        body: data,
-        secure: true,
-        type: ContentType.Json,
         format: "json",
         ...params,
       }),

@@ -38,16 +38,53 @@
         <table class="w-full">
           <thead class="bg-text/5 border-b border-text/10">
             <tr>
-              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">ID</th>
-              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">Título</th>
-              <th class="px-4 py-3 text-right text-xs font-inter-bold text-text/60 uppercase tracking-wider">Acciones</th>
+              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider w-16">ID</th>
+              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider w-24">Índice</th>
+              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">Audio</th>
+              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">Transcripción</th>
+              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider w-32">Pág. Digital</th>
+              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider w-36">Meta Media ID</th>
+              <th class="px-4 py-3 text-right text-xs font-inter-bold text-text/60 uppercase tracking-wider w-24">Acciones</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-text/10">
             @for (item of items(); track item.id) {
               <tr class="hover:bg-text/5 transition-colors">
-                <td class="px-4 py-3 whitespace-nowrap"><span class="text-xs font-inter-semibold">{{ item.id }}</span></td>
-                <td class="px-4 py-3 whitespace-nowrap"><span class="text-xs font-inter-semibold">{{ item.title || item.url || '---' }}</span></td>
+                <td class="px-4 py-3 whitespace-nowrap"><span class="text-xs font-inter-semibold text-text/50">{{ item.id }}</span></td>
+                <td class="px-4 py-3 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-inter-bold bg-rose-600/10 text-rose-600 dark:text-rose-400 border border-rose-600/20">
+                    Audio {{ item.audioIndex }}
+                  </span>
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap">
+                  <a [href]="item.url" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-secondary hover:underline font-inter-semibold" title="Abrir audio en pestaña nueva">
+                    <i class="fas fa-play-circle text-secondary/70"></i> Escuchar
+                  </a>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="flex items-center gap-1.5 max-w-[300px]">
+                    <span class="text-xs font-inter-regular text-text/75 truncate flex-1" [title]="item.transcription || ''">
+                      {{ item.transcription || '---' }}
+                    </span>
+                    @if (item.transcription && item.transcription.length > 30) {
+                      <button (click)="openZoom('Transcripción de Audio', item.transcription)" class="text-secondary hover:text-secondary/80 cursor-pointer p-0.5 flex items-center justify-center shrink-0" title="Ver todo">
+                        <i class="fas fa-search-plus text-[11px]"></i>
+                      </button>
+                    }
+                  </div>
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap">
+                  <span class="inline-flex items-center gap-1 text-xs font-inter-semibold text-secondary bg-secondary/5 px-2 py-0.5 rounded border border-secondary/15">
+                    <i class="fas fa-file-invoice text-[10px]"></i> Pág. {{ item.bookPage }}
+                  </span>
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap">
+                  @if (item.metaMediaId) {
+                    <code class="px-1.5 py-0.5 bg-text/5 border border-text/10 rounded text-[10px] font-mono text-text/80">{{ item.metaMediaId }}</code>
+                  } @else {
+                    <span class="text-xs text-text/30 italic">No asociado</span>
+                  }
+                </td>
                 <td class="px-4 py-3 whitespace-nowrap text-right">
                   <div class="flex items-center justify-end gap-1">
                     <button (click)="navigateToEdit(item.id)" class="p-1.5 text-info hover:bg-info/10 rounded-lg transition-colors text-sm" title="Editar"><i class="fas fa-edit"></i></button>
@@ -59,6 +96,15 @@
           </tbody>
         </table>
       </div>
+      
+      <!-- Paginación -->
+      <app-pagination
+        [meta]="meta()"
+        [currentPage]="currentPage()"
+        [pageSize]="pageSize()"
+        (pageChange)="onPageChange($event)"
+        (pageSizeChange)="onPageSizeChange($event)"
+      />
     }
   </div>
 </div>
@@ -77,4 +123,21 @@
       (onSubmitForm)="handleFormSubmit($event)"
     />
   </app-modal-form>
+}
+
+@if (zoomContent()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+    <div class="bg-surface border border-text/15 rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden flex flex-col animate-fade-in">
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-text/10 bg-text/5">
+        <h3 class="font-inter-bold text-text text-xs uppercase tracking-wider">{{ zoomTitle() }}</h3>
+        <button (click)="closeZoom()" class="text-text/40 hover:text-text cursor-pointer transition-colors"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="p-6 max-h-[50vh] overflow-y-auto custom-scrollbar font-inter-regular text-sm text-text/80 leading-relaxed whitespace-pre-wrap">
+        {{ zoomContent() }}
+      </div>
+      <div class="px-5 py-3 border-t border-text/10 bg-text/5 flex justify-end">
+        <button (click)="closeZoom()" class="px-4 py-1.5 bg-text/10 hover:bg-text/15 text-text text-xs font-inter-bold rounded-lg transition-colors cursor-pointer">Cerrar</button>
+      </div>
+    </div>
+  </div>
 }
