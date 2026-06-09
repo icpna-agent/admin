@@ -3,16 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ApiResponse } from '@api/backend.api';
 
-export function jsonValidator(control: AbstractControl): ValidationErrors | null {
-  const val = control.value;
-  if (!val || !val.trim()) return null;
-  try {
-    JSON.parse(val);
-    return null;
-  } catch (e) {
-    return { invalidJson: true };
-  }
-}
+
 
 @Component({
   selector: 'app-panel-form',
@@ -32,7 +23,7 @@ export class PanelForm {
     subTheme: [''],
     instruction: [''],
     bookPage: [null, [Validators.required, Validators.min(1)]],
-    content: ['', [jsonValidator]]
+    content: ['']
   });
 
   constructor() {
@@ -41,7 +32,7 @@ export class PanelForm {
       if (this.editMode() && existing) {
         const patched = {
           ...existing,
-          content: existing.content ? JSON.stringify(existing.content, null, 2) : ''
+          content: existing.content || ''
         };
         this.form.patchValue(patched);
       } else {
@@ -59,7 +50,7 @@ export class PanelForm {
     val.bookPage = +val.bookPage;
 
     if (val.content && val.content.trim()) {
-      val.content = JSON.parse(val.content);
+      val.content = val.content.trim();
     } else {
       val.content = null;
     }

@@ -3,16 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ApiResponse, ApiField } from '@api/backend.api';
 
-export function jsonValidator(control: AbstractControl): ValidationErrors | null {
-  const val = control.value;
-  if (!val || !val.trim()) return null;
-  try {
-    JSON.parse(val);
-    return null;
-  } catch (e) {
-    return { invalidJson: true };
-  }
-}
+
 
 @Component({
   selector: 'app-lesson-form',
@@ -55,7 +46,7 @@ export class LessonForm {
     activityNumber: [null, [Validators.min(1)]],
     letterNumber: [''],
     instruction: [''],
-    content: ['', [jsonValidator]]
+    content: ['']
   });
 
   constructor() {
@@ -64,7 +55,7 @@ export class LessonForm {
       if (this.editMode() && existing) {
         const patched = {
           ...existing,
-          content: existing.content ? JSON.stringify(existing.content, null, 2) : ''
+          content: existing.content || ''
         };
         this.form.patchValue(patched);
       } else {
@@ -89,7 +80,7 @@ export class LessonForm {
     }
 
     if (val.content && val.content.trim()) {
-      val.content = JSON.parse(val.content);
+      val.content = val.content.trim();
     } else {
       val.content = null;
     }

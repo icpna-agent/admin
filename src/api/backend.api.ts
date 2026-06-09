@@ -327,7 +327,7 @@ export interface BookLessonResultDto {
   activityNumber?: number | null;
   letterNumber?: string | null;
   instruction?: string | null;
-  content?: object | null;
+  content?: string | null;
   bookPage: number;
   bookId: number;
   /** @format date-time */
@@ -375,8 +375,8 @@ export interface BookLessonCreateDto {
   letterNumber?: string;
   /** @example "Read the article and match statements 1-5 to paragraphs A-E." */
   instruction?: string;
-  /** @example {"items":[]} */
-  content?: object;
+  /** @example "Some additional text or exercises content" */
+  content?: string;
   /** @example 4 */
   bookPage: number;
   /** @example 1 */
@@ -415,8 +415,8 @@ export interface BookLessonUpdateDto {
   letterNumber?: string;
   /** @example "Read the article and match statements 1-5 to paragraphs A-E." */
   instruction?: string;
-  /** @example {"items":[]} */
-  content?: object;
+  /** @example "Some additional text or exercises content" */
+  content?: string;
   /** @example 4 */
   bookPage?: number;
   /** @example 1 */
@@ -429,7 +429,7 @@ export interface BookPanelResultDto {
   theme?: string | null;
   subTheme?: string | null;
   instruction?: string | null;
-  content?: object | null;
+  content?: string | null;
   bookPage: number;
   bookId: number;
   /** @format date-time */
@@ -454,8 +454,8 @@ export interface BookPanelCreateDto {
   subTheme?: string;
   /** @example "Complete the grammar panel with a few, a little, many and much." */
   instruction?: string;
-  /** @example {"sections":[]} */
-  content?: object;
+  /** @example "Some additional text or panel content" */
+  content?: string;
   /** @example 5 */
   bookPage: number;
   /** @example 1 */
@@ -471,8 +471,8 @@ export interface BookPanelUpdateDto {
   subTheme?: string;
   /** @example "Complete the grammar panel with a few, a little, many and much." */
   instruction?: string;
-  /** @example {"sections":[]} */
-  content?: object;
+  /** @example "Some additional text or panel content" */
+  content?: string;
   /** @example 5 */
   bookPage?: number;
   /** @example 1 */
@@ -871,7 +871,7 @@ export interface EngineVerifyWebhookParams {
 
 export type EngineVerifyWebhookData = any;
 
-/** @example {"object":"whatsapp_business_account","entry":[{"id":"3ac01333-459d-443c-8139-5c2b3e758e96","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"51936081148","phone_number_id":"756536844216424"},"contacts":[{"profile":{"name":"Santos Cachorros"},"wa_id":"1443782653529215"}],"messages":[{"from":"51929073820","id":"f6aac6b9-7359-4c3e-b7d7-d75190fb68ca","timestamp":"1780932792536","text":{"body":"<MESSAGE_BODY_TEXT>"},"type":"text"}]},"field":"messages"}]}]} */
+/** @example {"object":"whatsapp_business_account","entry":[{"id":"3f202df4-09c7-491c-9378-62eba18c2a98","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"51936081148","phone_number_id":"756536844216424"},"contacts":[{"profile":{"name":"Santos Cachorros"},"wa_id":"1443782653529215"}],"messages":[{"from":"51929073820","id":"0654c9cb-5fb5-48de-b9a4-9d39151e464b","timestamp":"1780956197980","text":{"body":"<MESSAGE_BODY_TEXT>"},"type":"text"}]},"field":"messages"}]}]} */
 export type EngineRunFlowProductionPayload = any;
 
 export type EngineRunFlowProductionData = any;
