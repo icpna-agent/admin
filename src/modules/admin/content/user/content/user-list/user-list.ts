@@ -112,7 +112,7 @@ export class UserList implements OnInit {
   }
 
   resetearChat(id: number) {
-    this.servicioAlerta.confirm('Resetear Chat', '¿Estás seguro de que deseas resetear el chat de este usuario?', () => {
+    this.servicioAlerta.confirm('Reset', '¿Estás seguro de que deseas resetear el chat de este usuario?', () => {
       this.cargando.set(true);
       this.usuarioService.disableChat(id).then(() => {
         this.servicioToast.success('Chat reseteado exitosamente');
