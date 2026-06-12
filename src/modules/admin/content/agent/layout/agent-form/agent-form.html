@@ -28,7 +28,7 @@
             type="text"
             formControlName="phone"
             class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
-            placeholder="Ej: +51999999999"
+            placeholder="Ej: 51999999999"
           />
           @if (botForm.get('phone')?.touched && botForm.get('phone')?.invalid) {
             <span class="text-[10px] text-danger mt-1 font-inter-medium block">El teléfono es requerido.</span>
@@ -144,7 +144,7 @@
             type="text"
             formControlName="display_phone_number"
             class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
-            placeholder="Ej: +51999999999"
+            placeholder="Ej: 51999999999"
           />
           @if (instanceForm.get('display_phone_number')?.touched && instanceForm.get('display_phone_number')?.invalid) {
             <span class="text-[10px] text-danger mt-1 font-inter-medium block">Teléfono visible es requerido.</span>

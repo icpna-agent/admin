@@ -2,6 +2,7 @@ import { Component, signal, inject, OnInit, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { UserService } from '@service/user.service';
+import { BookService } from '@service/book.service';
 import { ToastService } from '@service/toast.service';
 import { AlertService } from '@service/alert.service';
 import { PATH, buildPath } from '@route/path.route';
@@ -15,11 +16,13 @@ import { UserForm } from '../../layout/user-form/user-form';
 })
 export class UserList implements OnInit {
   private usuarioService = inject(UserService);
+  private bookService = inject(BookService);
   private servicioToast = inject(ToastService);
   private servicioAlerta = inject(AlertService);
   private enrutador = inject(Router);
 
   usuarios = signal<any[]>([]);
+  libros = signal<any[]>([]);
   cargando = signal(false);
   mostrarModal = signal(false);
   consultaBusqueda = signal('');
@@ -28,7 +31,23 @@ export class UserList implements OnInit {
   formularioComponente = viewChild<UserForm>(UserForm);
 
   ngOnInit() {
+    this.cargarLibros();
     this.cargarUsuarios();
+  }
+
+  cargarLibros() {
+    this.bookService.listBooks({ limit: 100 }).then((respuesta: any) => {
+      const datos = respuesta.data ? respuesta.data : (Array.isArray(respuesta) ? respuesta : []);
+      this.libros.set(datos);
+    }).catch(() => {
+      this.servicioToast.error('Error al cargar la lista de libros');
+    });
+  }
+
+  obtenerNivelLibro(id: number | null | undefined): string {
+    if (!id) return 'Ninguno';
+    const libro = this.libros().find(l => l.id === id);
+    return libro ? (libro.edition || libro.level) : '---';
   }
 
   cargarUsuarios() {

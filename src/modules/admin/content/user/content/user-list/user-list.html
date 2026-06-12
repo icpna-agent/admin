@@ -36,6 +36,7 @@
             <tr>
               <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">ID</th>
               <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">Teléfono</th>
+              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">Nivel del Libro</th>
               <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">Estado</th>
               <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">Habilitado Desde</th>
               <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">Habilitado Hasta</th>
@@ -51,6 +52,9 @@
                     <i class="fas fa-user text-secondary text-xs"></i>
                     <span class="text-xs font-inter-semibold">{{ item.phone || '---' }}</span>
                   </div>
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap">
+                  <span class="text-xs font-inter-semibold text-text/75">{{ obtenerNivelLibro(item.currentBookId) }}</span>
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap">
                   @if (item.enabled) {

@@ -7,14 +7,14 @@
         type="text"
         formControlName="phone"
         class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
-        placeholder="Ej: +51999999999"
+        placeholder="Ej: 51999999999"
       />
       @if (formularioUsuario.get('phone')?.touched && formularioUsuario.get('phone')?.invalid) {
         <span class="text-[10px] text-danger mt-1 font-inter-medium block">
           @if (formularioUsuario.get('phone')?.errors?.['required']) {
             El teléfono es requerido.
           } @else {
-            Formato de teléfono inválido (ej: +51999999999).
+            Formato de teléfono inválido (ej: 51999999999).
           }
         </span>
       }
@@ -29,6 +29,24 @@
         class="w-4 h-4 text-secondary bg-text/5 border border-text/10 rounded focus:ring-secondary transition-all"
       />
       <label for="enabled" class="text-xs font-inter-bold text-text/80 uppercase tracking-wider select-none cursor-pointer">Usuario Habilitado</label>
+    </div>
+  </div>
+
+  <!-- Libro Asignado -->
+  <div class="grid grid-cols-1 gap-4">
+    <div>
+      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Nivel del Libro</label>
+      <select
+        formControlName="currentBookId"
+        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M7%209l3%203%203-3%22%20stroke%3D%22%2523666%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem] bg-[right_0.5rem_center] bg-no-repeat pr-10"
+      >
+        <option [value]="null">Ninguno</option>
+        @for (libro of libros(); track libro.id) {
+          @if (libro.active || libro.id === formularioUsuario.get('currentBookId')?.value) {
+            <option [value]="libro.id">{{ libro.edition || libro.level }}</option>
+          }
+        }
+      </select>
     </div>
   </div>
 
