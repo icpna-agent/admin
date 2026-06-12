@@ -110,4 +110,17 @@ export class UserList implements OnInit {
       });
     });
   }
+
+  resetearChat(id: number) {
+    this.servicioAlerta.confirm('Resetear Chat', '¿Estás seguro de que deseas resetear el chat de este usuario?', () => {
+      this.cargando.set(true);
+      this.usuarioService.disableChat(id).then(() => {
+        this.servicioToast.success('Chat reseteado exitosamente');
+        this.cargarUsuarios();
+      }).catch(error => {
+        this.servicioToast.error(this.usuarioService.obtenerMensajeError(error));
+        this.cargando.set(false);
+      });
+    });
+  }
 }

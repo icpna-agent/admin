@@ -71,6 +71,7 @@
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap text-right">
                   <div class="flex items-center justify-end gap-1">
+                    <button (click)="resetearChat(item.id)" class="p-1.5 text-warning hover:bg-warning/10 rounded-lg transition-colors text-sm" title="Resetear Chat"><i class="fas fa-sync-alt"></i></button>
                     <button (click)="navegarAEditar(item.id)" class="p-1.5 text-info hover:bg-info/10 rounded-lg transition-colors text-sm" title="Editar"><i class="fas fa-edit"></i></button>
                     <button (click)="eliminarUsuario(item.id)" class="p-1.5 text-danger hover:bg-danger/10 rounded-lg transition-colors text-sm" title="Eliminar"><i class="fas fa-trash"></i></button>
                   </div>

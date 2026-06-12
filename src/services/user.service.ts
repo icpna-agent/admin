@@ -27,6 +27,10 @@ export class UserService {
     return this.api.user.delete({ id }).then((respuesta) => respuesta.data);
   }
 
+  disableChat(id: number) {
+    return this.api.user.disableChat({ id }).then((respuesta) => respuesta.data);
+  }
+
   obtenerMensajeError(error: unknown): string {
     const errorApi = error as { error?: { message?: string | string[] }; message?: string };
     const mensaje = errorApi.error?.message || errorApi.message || 'Ocurrió un error inesperado';
