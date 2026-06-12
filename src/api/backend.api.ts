@@ -882,6 +882,11 @@ export interface UserDeleteResultDto {
   success: boolean;
 }
 
+export interface UserDisableChatResultDto {
+  /** @example true */
+  success: boolean;
+}
+
 export type AppGetHelloData = any;
 
 export interface EngineVerifyWebhookParams {
@@ -892,7 +897,7 @@ export interface EngineVerifyWebhookParams {
 
 export type EngineVerifyWebhookData = any;
 
-/** @example {"object":"whatsapp_business_account","entry":[{"id":"02b92b4f-7389-4bed-b55c-c0936e0b429b","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"51936081148","phone_number_id":"756536844216424"},"contacts":[{"profile":{"name":"Santos Cachorros"},"wa_id":"1443782653529215"}],"messages":[{"from":"51929073820","id":"d6869465-bed5-439f-bcc3-0c7fa7d80783","timestamp":"1781248409066","text":{"body":"<MESSAGE_BODY_TEXT>"},"type":"text"}]},"field":"messages"}]}]} */
+/** @example {"object":"whatsapp_business_account","entry":[{"id":"8ebb0fe3-f342-4843-b89d-1d6167825a05","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"51936081148","phone_number_id":"756536844216424"},"contacts":[{"profile":{"name":"Santos Cachorros"},"wa_id":"1443782653529215"}],"messages":[{"from":"51929073820","id":"68e90862-f069-4851-a42a-12326f340f25","timestamp":"1781281054929","text":{"body":"<MESSAGE_BODY_TEXT>"},"type":"text"}]},"field":"messages"}]}]} */
 export type EngineRunFlowProductionPayload = any;
 
 export type EngineRunFlowProductionData = any;
@@ -1300,6 +1305,12 @@ export interface UserDeleteParams {
 }
 
 export type UserDeleteData = UserDeleteResultDto;
+
+export interface UserDisableChatParams {
+  id: number;
+}
+
+export type UserDisableChatData = UserDisableChatResultDto;
 
 export namespace App {
   /**
@@ -2619,6 +2630,25 @@ export namespace User {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = UserDeleteData;
+  }
+
+  /**
+   * No description
+   * @tags user
+   * @name UserDisableChat
+   * @summary Disable the latest chat of a user
+   * @request POST:/admin/user/disable-chat/{id}
+   * @secure
+   * @response `200` `UserDisableChatData`
+   */
+  export namespace UserDisableChat {
+    export type RequestParams = {
+      id: number;
+    };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = UserDisableChatData;
   }
 }
 
@@ -4366,6 +4396,28 @@ export class Api<SecurityDataType extends unknown> {
       this.http.request<UserDeleteData, any>({
         path: `/admin/user/delete/${id}`,
         method: "DELETE",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags user
+     * @name UserDisableChat
+     * @summary Disable the latest chat of a user
+     * @request POST:/admin/user/disable-chat/{id}
+     * @secure
+     * @response `200` `UserDisableChatData`
+     */
+    disableChat: (
+      { id }: UserDisableChatParams,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<UserDisableChatData, any>({
+        path: `/admin/user/disable-chat/${id}`,
+        method: "POST",
         secure: true,
         format: "json",
         ...params,
