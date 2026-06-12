@@ -701,6 +701,22 @@ export interface BookPreviewDto {
   bookPage?: number;
 }
 
+export interface AudioTranscriptDto {
+  /**
+   * URL pública del archivo de audio a transcribir
+   * @example "https://duxebhp63ladi.cloudfront.net/americanbigpicture/flipbook/b1p/abp6b1p_sb/files/SlidePage/190213150917177.mp3"
+   */
+  url: string;
+}
+
+export interface AudioTranscriptResultDto {
+  /**
+   * Transcripción del audio obtenida exitosamente
+   * @example "Well, the computer screen is an easy one to analyze..."
+   */
+  transcription: string;
+}
+
 export interface BotResultDto {
   id: number;
   phone: string;
@@ -815,6 +831,7 @@ export interface UserResultDto {
   updatedAt: string;
   /** @format date-time */
   deletedAt?: string | null;
+  currentBookId?: number | null;
 }
 
 export interface UserListDto {
@@ -837,6 +854,8 @@ export interface UserCreateDto {
    * @example "2026-12-31T23:59:59.000Z"
    */
   enabledTo?: string;
+  /** @example 1 */
+  currentBookId?: number | null;
 }
 
 export interface UserUpdateDto {
@@ -854,6 +873,8 @@ export interface UserUpdateDto {
    * @example "2026-12-31T23:59:59.000Z"
    */
   enabledTo?: string;
+  /** @example 1 */
+  currentBookId?: number | null;
 }
 
 export interface UserDeleteResultDto {
@@ -871,7 +892,7 @@ export interface EngineVerifyWebhookParams {
 
 export type EngineVerifyWebhookData = any;
 
-/** @example {"object":"whatsapp_business_account","entry":[{"id":"3f202df4-09c7-491c-9378-62eba18c2a98","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"51936081148","phone_number_id":"756536844216424"},"contacts":[{"profile":{"name":"Santos Cachorros"},"wa_id":"1443782653529215"}],"messages":[{"from":"51929073820","id":"0654c9cb-5fb5-48de-b9a4-9d39151e464b","timestamp":"1780956197980","text":{"body":"<MESSAGE_BODY_TEXT>"},"type":"text"}]},"field":"messages"}]}]} */
+/** @example {"object":"whatsapp_business_account","entry":[{"id":"02b92b4f-7389-4bed-b55c-c0936e0b429b","changes":[{"value":{"messaging_product":"whatsapp","metadata":{"display_phone_number":"51936081148","phone_number_id":"756536844216424"},"contacts":[{"profile":{"name":"Santos Cachorros"},"wa_id":"1443782653529215"}],"messages":[{"from":"51929073820","id":"d6869465-bed5-439f-bcc3-0c7fa7d80783","timestamp":"1781248409066","text":{"body":"<MESSAGE_BODY_TEXT>"},"type":"text"}]},"field":"messages"}]}]} */
 export type EngineRunFlowProductionPayload = any;
 
 export type EngineRunFlowProductionData = any;
@@ -1184,6 +1205,8 @@ export type BookAiPreviewBookLessonData = BookLessonCreateDto[];
 export type BookAiPreviewBookPanelData = BookPanelCreateDto[];
 
 export type BookAiPreviewBookAudioData = BookAudioCreateDto[];
+
+export type BookAiTranscribeAudioData = AudioTranscriptResultDto;
 
 export interface AgentFindAllBotsParams {
   /** @default 1 */
@@ -2281,6 +2304,23 @@ export namespace BookAi {
     export type RequestBody = BookPreviewDto;
     export type RequestHeaders = {};
     export type ResponseBody = BookAiPreviewBookAudioData;
+  }
+
+  /**
+   * No description
+   * @tags book-ai
+   * @name BookAiTranscribeAudio
+   * @summary Transcribe un archivo de audio a partir de su URL pública usando la IA de Gemini
+   * @request POST:/admin/book-ai/audio-transcript
+   * @secure
+   * @response `200` `BookAiTranscribeAudioData` Transcripción del audio generada exitosamente
+   */
+  export namespace BookAiTranscribeAudio {
+    export type RequestParams = {};
+    export type RequestQuery = {};
+    export type RequestBody = AudioTranscriptDto;
+    export type RequestHeaders = {};
+    export type ResponseBody = BookAiTranscribeAudioData;
   }
 }
 
@@ -3964,6 +4004,30 @@ export class Api<SecurityDataType extends unknown> {
     ) =>
       this.http.request<BookAiPreviewBookAudioData, any>({
         path: `/admin/book-ai/preview-book-audio`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags book-ai
+     * @name BookAiTranscribeAudio
+     * @summary Transcribe un archivo de audio a partir de su URL pública usando la IA de Gemini
+     * @request POST:/admin/book-ai/audio-transcript
+     * @secure
+     * @response `200` `BookAiTranscribeAudioData` Transcripción del audio generada exitosamente
+     */
+    "book-aiTranscribeAudio": (
+      data: AudioTranscriptDto,
+      params: RequestParams = {},
+    ) =>
+      this.http.request<BookAiTranscribeAudioData, any>({
+        path: `/admin/book-ai/audio-transcript`,
         method: "POST",
         body: data,
         secure: true,

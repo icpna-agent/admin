@@ -47,6 +47,111 @@ export class AudioList implements OnInit {
     this.zoomContent.set(null);
   }
 
+  showUrlsModal = signal(false);
+  loadingAllAudios = signal(false);
+  allAudios = signal<any[]>([]);
+
+  openUrlsModal() {
+    this.showUrlsModal.set(true);
+    this.loadingAllAudios.set(true);
+    
+    const query = {
+      bookId: +this.bookId()!,
+      limit: 100,
+      page: 1
+    };
+
+    this.bookService.list('audios', query).then((res: any) => {
+      const data = res && res.data ? res.data : (Array.isArray(res) ? res : []);
+      const sorted = [...data].sort((a, b) => {
+        return a.audioIndex.localeCompare(b.audioIndex, undefined, { numeric: true, sensitivity: 'base' });
+      });
+      this.allAudios.set(sorted);
+      this.loadingAllAudios.set(false);
+    }).catch(() => {
+      this.toastService.error('Error al cargar la lista completa de audios');
+      this.loadingAllAudios.set(false);
+    });
+  }
+
+  closeUrlsModal() {
+    this.showUrlsModal.set(false);
+    this.loadItems();
+  }
+
+  onUrlInput(item: any, value: string) {
+    this.allAudios.update(items =>
+      items.map(i => i.id === item.id ? { ...i, url: value } : i)
+    );
+  }
+
+  clearAudioUrl(item: any, inputElement: HTMLInputElement) {
+    inputElement.value = '';
+    this.allAudios.update(items =>
+      items.map(i => i.id === item.id ? { ...i, url: '' } : i)
+    );
+    inputElement.focus();
+  }
+
+  uploadToMeta(item: any) {
+    if (!item.url || item.url.trim() === '') {
+      return;
+    }
+
+    this.allAudios.update(items =>
+      items.map(i => i.id === item.id ? { ...i, uploading: true } : i)
+    );
+
+    // 1. Guardar la URL del audio en base de datos primero
+    this.bookService.update('audios', item.id, { url: item.url }).then(() => {
+      // 2. Subir a Meta
+      this.bookService.uploadAudioUrlToMeta(item.url).then((uploadRes: any) => {
+        const metaId = +uploadRes.metaMediaId;
+        
+        // 3. Transcribir el audio
+        this.bookService.transcribeAudio(item.url).then((transcribeRes: any) => {
+          const text = transcribeRes.transcription;
+          
+          // 4. Guardar metaMediaId y la transcripción en base de datos
+          this.bookService.update('audios', item.id, { metaMediaId: metaId, transcription: text }).then(() => {
+            this.allAudios.update(items =>
+              items.map(i => i.id === item.id ? { ...i, metaMediaId: metaId, transcription: text, uploading: false } : i)
+            );
+            this.toastService.success(`Audio ${item.audioIndex} procesado y subido con éxito`);
+          }).catch(err => {
+            this.allAudios.update(items =>
+              items.map(i => i.id === item.id ? { ...i, uploading: false } : i)
+            );
+            this.toastService.error('Error al guardar datos procesados: ' + this.bookService.getErrorMessage(err));
+          });
+        }).catch(err => {
+          // En caso la transcripción falle, intentamos guardar al menos el metaMediaId
+          this.bookService.update('audios', item.id, { metaMediaId: metaId }).then(() => {
+            this.allAudios.update(items =>
+              items.map(i => i.id === item.id ? { ...i, metaMediaId: metaId, uploading: false } : i)
+            );
+            this.toastService.warning('Audio subido a Meta, pero falló la transcripción');
+          }).catch(dbErr => {
+            this.allAudios.update(items =>
+              items.map(i => i.id === item.id ? { ...i, uploading: false } : i)
+            );
+            this.toastService.error('Error al guardar Meta ID: ' + this.bookService.getErrorMessage(dbErr));
+          });
+        });
+      }).catch(err => {
+        this.allAudios.update(items =>
+          items.map(i => i.id === item.id ? { ...i, uploading: false } : i)
+        );
+        this.toastService.error('Error al subir a Meta: ' + this.bookService.getErrorMessage(err));
+      });
+    }).catch(err => {
+      this.allAudios.update(items =>
+        items.map(i => i.id === item.id ? { ...i, uploading: false } : i)
+      );
+      this.toastService.error('Error al guardar la URL del audio: ' + this.bookService.getErrorMessage(err));
+    });
+  }
+
   formComponent = viewChild<AudioForm>(AudioForm);
 
   ngOnInit() {

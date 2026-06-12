@@ -136,6 +136,14 @@ export class BookService {
     return Array.isArray(message) ? message[0] : message;
   }
 
+  uploadAudioUrlToMeta(url: string) {
+    return this.api.storage.uploadAudioUrlToMeta({ url }).then((response) => response.data);
+  }
+
+  transcribeAudio(url: string) {
+    return this.api.bookAi['book-aiTranscribeAudio']({ url }).then((response) => response.data);
+  }
+
   private cleanQuery(query: Record<string, unknown>) {
     return Object.fromEntries(
       Object.entries(query).filter(([, value]) => value !== '' && value !== undefined && value !== null),

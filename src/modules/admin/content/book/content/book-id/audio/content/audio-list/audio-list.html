@@ -10,6 +10,9 @@
            <input type="text" placeholder="Buscar" [value]="searchQuery()" (input)="onSearch($event)" class="w-full px-4 py-2 bg-background border border-text/10 rounded-lg text-sm outline-none focus:border-secondary transition-colors">
         </div>
         <div class="flex gap-2 w-full sm:w-auto">
+          <button (click)="openUrlsModal()" class="flex items-center justify-center w-9 h-9 bg-background border border-text/10 text-text rounded-lg hover:bg-text/5 transition-all shadow-sm shrink-0 cursor-pointer" title="Gestionar URLs">
+            <i class="fas fa-link text-xs"></i>
+          </button>
           <button (click)="openCreateModal()" class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-secondary text-background rounded-lg text-sm font-inter-semibold hover:bg-secondary/90 transition-all shadow-sm whitespace-nowrap"><i class="fas fa-plus text-xs"></i><span>Nuevo</span></button>
         </div>
       </div>
@@ -53,7 +56,7 @@
                 <td class="px-4 py-3 whitespace-nowrap"><span class="text-xs font-inter-semibold text-text/50">{{ item.id }}</span></td>
                 <td class="px-4 py-3 whitespace-nowrap">
                   <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-inter-bold bg-rose-600/10 text-rose-600 dark:text-rose-400 border border-rose-600/20">
-                    Audio {{ item.audioIndex }}
+                    {{ item.audioIndex }}
                   </span>
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap">
@@ -123,6 +126,161 @@
       (onSubmitForm)="handleFormSubmit($event)"
     />
   </app-modal-form>
+}
+
+@if (showUrlsModal()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+    <div class="bg-surface border border-text/15 rounded-2xl shadow-2xl max-w-4xl w-full overflow-hidden flex flex-col animate-fade-in max-h-[85vh]">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-text/10 bg-text/5">
+        <div>
+          <h3 class="font-anton text-text text-lg lowercase">gestionar urls de audios</h3>
+          <p class="text-xs text-text/60 font-inter-regular mt-0.5">Edita de forma rápida los enlaces de todos los audios de este libro.</p>
+        </div>
+        <button (click)="closeUrlsModal()" class="text-text/40 hover:text-text cursor-pointer transition-colors p-1"><i class="fas fa-times text-lg"></i></button>
+      </div>
+
+      <!-- Content -->
+      <div class="p-6 overflow-y-auto custom-scrollbar flex-1">
+        @if (loadingAllAudios()) {
+          <div class="flex flex-col items-center justify-center py-12 gap-3">
+            <i class="fas fa-spinner fa-spin text-3xl text-secondary"></i>
+            <p class="text-text/60 text-sm font-inter-medium">Cargando audios...</p>
+          </div>
+        } @else if (allAudios().length === 0) {
+          <div class="flex flex-col items-center justify-center py-12 text-text/60">
+            <i class="fas fa-volume-high text-4xl mb-3 text-text/20"></i>
+            <p class="font-inter-semibold text-sm">No hay audios registrados en este libro.</p>
+          </div>
+        } @else {
+          <div class="bg-surface border border-text/10 rounded-xl shadow-xs overflow-hidden">
+            <div class="overflow-x-auto max-h-[55vh]">
+              <table class="w-full text-left border-collapse">
+                <thead class="bg-surface border-b border-text/10 sticky top-0 z-10">
+                  <tr>
+                    <th class="px-4 py-3 text-[10px] font-inter-bold text-text/60 uppercase tracking-wider w-28">Índice</th>
+                    <th class="px-4 py-3 text-[10px] font-inter-bold text-text/60 uppercase tracking-wider">URL del Audio</th>
+                    <th class="px-4 py-3 text-[10px] font-inter-bold text-text/60 uppercase tracking-wider w-44">Meta Media ID</th>
+                    <th class="px-4 py-3 text-[10px] font-inter-bold text-text/60 uppercase tracking-wider w-24 text-center">Transcripción</th>
+                    <th class="px-4 py-3 text-[10px] font-inter-bold text-text/60 uppercase tracking-wider w-20 text-center">Subir</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-text/10">
+                  @for (item of allAudios(); track item.id) {
+                    <tr class="hover:bg-text/2 transition-colors">
+                      <!-- Column 1: Index -->
+                      <td class="px-4 py-3 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-inter-bold bg-rose-600/10 text-rose-600 dark:text-rose-400 border border-rose-600/20">
+                          {{ item.audioIndex }}
+                        </span>
+                      </td>
+
+                      <!-- Column 2: URL Input -->
+                      <td class="px-4 py-3">
+                        <div class="relative flex items-center">
+                          <input
+                            #urlInput
+                            type="text"
+                            [value]="item.url || ''"
+                            (input)="onUrlInput(item, urlInput.value)"
+                            (keydown.enter)="urlInput.blur()"
+                            placeholder="Coloca la URL del audio..."
+                            class="w-full pl-3 pr-10 py-1.5 text-xs bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
+                            [disabled]="item.uploading"
+                          />
+                          
+                          <!-- Clear Button -->
+                          <div class="absolute right-3 flex items-center gap-1.5">
+                            @if (urlInput.value) {
+                              <button
+                                type="button"
+                                (mousedown)="$event.preventDefault()"
+                                (click)="$event.preventDefault(); $event.stopPropagation(); clearAudioUrl(item, urlInput)"
+                                class="w-5 h-5 flex items-center justify-center text-text/40 hover:text-danger hover:bg-danger/10 transition-colors rounded-full cursor-pointer"
+                                title="Eliminar URL rápidamente"
+                              >
+                                <i class="fas fa-times text-[10px]"></i>
+                              </button>
+                            }
+                          </div>
+                        </div>
+                      </td>
+
+                      <!-- Column 3: Meta Media ID -->
+                      <td class="px-4 py-3 whitespace-nowrap">
+                        @if (item.metaMediaId) {
+                          <code class="px-1.5 py-0.5 bg-green-600/10 border border-green-600/20 rounded text-[10px] font-mono text-green-600 dark:text-green-400">{{ item.metaMediaId }}</code>
+                        } @else {
+                          <span class="text-xs text-text/30 italic">No asociado</span>
+                        }
+                      </td>
+
+                      <!-- Column 4: Transcription Eye Icon -->
+                      <td class="px-4 py-3 whitespace-nowrap text-center">
+                        <button
+                          type="button"
+                          (click)="item.showTranscript = !item.showTranscript"
+                          [disabled]="!item.transcription"
+                          [class]="'flex items-center justify-center w-8 h-8 rounded-lg mx-auto transition-all border shrink-0 ' + 
+                            (item.showTranscript ? 'bg-info/10 text-info border-info/20 hover:bg-info/20 cursor-pointer' : 
+                            (!item.transcription ? 'bg-text/5 text-text/20 border-text/5 cursor-not-allowed' : 
+                            'bg-text/5 text-text/60 border-text/10 hover:bg-text/10 hover:text-text cursor-pointer'))"
+                          [title]="item.transcription ? (item.showTranscript ? 'Ocultar transcripción' : 'Ver transcripción') : 'Sin transcripción'"
+                        >
+                          <i class="fas text-xs" [class.fa-eye]="!item.showTranscript" [class.fa-eye-slash]="item.showTranscript"></i>
+                        </button>
+                      </td>
+
+                      <!-- Column 5: Upload Button -->
+                      <td class="px-4 py-3 whitespace-nowrap text-center">
+                        <button
+                          type="button"
+                          (click)="uploadToMeta(item)"
+                          [disabled]="!urlInput.value || item.uploading"
+                          [class]="'flex items-center justify-center w-8 h-8 rounded-lg mx-auto transition-all border shrink-0 ' + 
+                            (item.metaMediaId ? 'bg-green-600/10 text-green-600 border-green-600/20 hover:bg-green-600/20 hover:text-green-600 cursor-pointer' : 
+                            (!urlInput.value || item.uploading ? 'bg-text/5 text-text/30 border-text/5 cursor-not-allowed' : 
+                            'bg-secondary/10 text-secondary border-secondary/20 hover:bg-secondary/20 hover:text-secondary cursor-pointer'))"
+                          [title]="item.metaMediaId ? 'Subido a Meta (ID: ' + item.metaMediaId + '). Volver a subir.' : 'Subir a Meta'"
+                        >
+                          @if (item.uploading) {
+                            <i class="fas fa-spinner fa-spin text-xs"></i>
+                          } @else if (item.metaMediaId) {
+                            <i class="fas fa-cloud text-xs"></i>
+                          } @else {
+                            <i class="fas fa-cloud-upload-alt text-xs"></i>
+                          }
+                        </button>
+                      </td>
+                    </tr>
+                    
+                    <!-- Expanded Transcription Row -->
+                    @if (item.showTranscript && item.transcription) {
+                      <tr class="bg-text/2">
+                        <td colspan="5" class="px-6 py-3">
+                          <div class="text-[11px] font-inter-regular text-text/80 bg-surface border border-text/10 p-3 rounded-lg leading-relaxed whitespace-pre-wrap">
+                            <div class="font-inter-bold text-text/40 uppercase tracking-wider text-[9px] mb-1.5 flex items-center gap-1">
+                              <i class="fas fa-quote-left text-[8px]"></i> Transcripción generada:
+                            </div>
+                            {{ item.transcription }}
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Footer -->
+      <div class="px-6 py-4 border-t border-text/10 bg-text/5 flex justify-end">
+        <button (click)="closeUrlsModal()" class="px-5 py-2 bg-secondary text-background hover:bg-secondary/90 text-sm font-inter-bold rounded-lg transition-colors cursor-pointer shadow-sm">Cerrar</button>
+      </div>
+    </div>
+  </div>
 }
 
 @if (zoomContent()) {

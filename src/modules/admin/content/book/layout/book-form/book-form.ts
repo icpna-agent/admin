@@ -30,6 +30,7 @@ export class BookForm {
     language: ['english', [Validators.required]],
     targetProgram: ['adults', [Validators.required]],
     cefrEquivalent: [''],
+    urlPreview: [''],
     active: [true]
   });
 
@@ -66,6 +67,9 @@ export class BookForm {
     }
     if (val.cefrEquivalent === '') {
       val.cefrEquivalent = null;
+    }
+    if (val.urlPreview === '') {
+      val.urlPreview = null;
     }
     this.onSubmitForm.emit(val);
   }
