@@ -1,14 +1,14 @@
 {
-  "name": "erixcel-admin",
+  "name": "icpna-admin",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build && cp dist/erixcel-admin/browser/index.csr.html dist/erixcel-admin/browser/index.html",
+    "build": "ng build && cp dist/icpna-admin/browser/index.csr.html dist/icpna-admin/browser/index.html",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "generate:types": "cd ../erixcel-engine && npm run generate:types",
-    "serve:ssr:erixcel-admin": "node dist/erixcel-admin/server/server.mjs",
+    "serve:ssr:icpna-admin": "node dist/icpna-admin/server/server.mjs",
     "vercel:deploy": "vercel --prod",
     "vercel:dev": "vercel dev"
   },

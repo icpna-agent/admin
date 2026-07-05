@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "erixcel-admin": {
+    "icpna-admin": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -59,10 +59,10 @@
           "builder": "@ngx-env/builder:dev-server",
           "configurations": {
             "production": {
-                "buildTarget": "erixcel-admin:build:production"
+              "buildTarget": "icpna-admin:build:production"
             },
             "development": {
-                "buildTarget": "erixcel-admin:build:development"
+              "buildTarget": "icpna-admin:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,9 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.css"]
+            "styles": [
+              "src/styles.css"
+            ]
           }
         }
       }
