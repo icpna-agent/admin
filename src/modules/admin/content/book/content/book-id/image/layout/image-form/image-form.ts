@@ -16,6 +16,7 @@ export class ImageForm {
   
   data = input<ApiResponse<'book', 'findOneBookImage'> | null>(null);
   editMode = input<boolean>(false);
+  bookId = input<number | null>(null);
   onSubmitForm = output<Record<string, unknown>>();
 
   selectedFile = signal<File | null>(null);
@@ -25,7 +26,7 @@ export class ImageForm {
   form: FormGroup = this.fb.group({
     url: ['', [Validators.required]],
     bookPage: [null, [Validators.required, Validators.min(1)]],
-    metaMediaId: [null]
+    metaMediaId: [null],
   });
 
   constructor() {
@@ -70,26 +71,45 @@ export class ImageForm {
       return;
     }
 
+    const bookPage = Number(this.form.get('bookPage')?.value);
+    const bookId = this.bookId();
+    if (!bookId || !bookPage) {
+      this.toastService.error('Primero indica la página del libro antes de subir la imagen.');
+      return;
+    }
+
     this.uploadingImage.set(true);
 
-    this.api.storage.uploadImageToMeta({ file })
+    this.api.book.findAllBookImages({ bookId, bookPage, limit: 1, page: 1 })
+      .then((existingRes) => {
+        const existing = existingRes.data?.data?.find((item) => item.id !== this.data()?.id);
+        if (existing) {
+          this.toastService.warning(`La página ${bookPage} ya tiene una imagen registrada. No se subió otra copia.`);
+          this.clearSelectedFile();
+          throw new Error('DUPLICATE_BOOK_IMAGE');
+        }
+
+        return this.api.storage.uploadImageToMeta({ file });
+      })
       .then((res) => {
-        if (res.data && res.data.url && res.data.metaMediaId) {
-          const numericId = +res.data.metaMediaId;
+        if (res.data && res.data.url) {
           this.form.patchValue({
             url: res.data.url,
-            metaMediaId: numericId,
+            metaMediaId: null,
           });
-          this.toastService.success('Imagen subida a Storage y Meta exitosamente.');
+          this.toastService.success('Imagen subida a Azure exitosamente.');
           this.clearSelectedFile();
         } else {
           this.toastService.error('Respuesta inesperada del servidor al subir la imagen.');
         }
       })
       .catch((err: unknown) => {
+        if (err instanceof Error && err.message === 'DUPLICATE_BOOK_IMAGE') {
+          return;
+        }
         console.error('Error al subir imagen:', err);
         const apiError = err as { error?: { message?: string | string[] }; message?: string };
-        const message = apiError.error?.message || apiError.message || 'Error al subir imagen a Meta';
+        const message = apiError.error?.message || apiError.message || 'Error al subir imagen a Azure';
         const finalMsg = Array.isArray(message) ? message[0] : message;
         this.toastService.error(finalMsg);
       })
@@ -105,12 +125,7 @@ export class ImageForm {
     }
     const val = { ...this.form.value } as Record<string, unknown>;
     val['bookPage'] = +(val['bookPage'] as number | string);
-    
-    if (val['metaMediaId'] !== null && val['metaMediaId'] !== undefined && val['metaMediaId'] !== '') {
-      val['metaMediaId'] = +(val['metaMediaId'] as number | string);
-    } else {
-      val['metaMediaId'] = null;
-    }
+    val['metaMediaId'] = null;
 
     this.onSubmitForm.emit(val);
   }

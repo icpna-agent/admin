@@ -104,20 +104,20 @@ export class AudioList implements OnInit {
 
     // 1. Guardar la URL del audio en base de datos primero
     this.bookService.update('audios', item.id, { url: item.url }).then(() => {
-      // 2. Subir a Meta
+      // 2. Guardar en Azure
       this.bookService.uploadAudioUrlToMeta(item.url).then((uploadRes: any) => {
-        const metaId = +uploadRes.metaMediaId;
+        const stableAudioUrl = uploadRes.url || item.url;
         
         // 3. Transcribir el audio
-        this.bookService.transcribeAudio(item.url).then((transcribeRes: any) => {
+        this.bookService.transcribeAudio(stableAudioUrl).then((transcribeRes: any) => {
           const text = transcribeRes.transcription;
           
-          // 4. Guardar metaMediaId y la transcripción en base de datos
-          this.bookService.update('audios', item.id, { metaMediaId: metaId, transcription: text }).then(() => {
+          // 4. Guardar URL estable y la transcripción en base de datos
+          this.bookService.update('audios', item.id, { url: stableAudioUrl, metaMediaId: null, transcription: text }).then(() => {
             this.allAudios.update(items =>
-              items.map(i => i.id === item.id ? { ...i, metaMediaId: metaId, transcription: text, uploading: false } : i)
+              items.map(i => i.id === item.id ? { ...i, url: stableAudioUrl, metaMediaId: null, transcription: text, uploading: false } : i)
             );
-            this.toastService.success(`Audio ${item.audioIndex} procesado y subido con éxito`);
+            this.toastService.success(`Audio ${item.audioIndex} guardado y transcrito con éxito`);
           }).catch(err => {
             this.allAudios.update(items =>
               items.map(i => i.id === item.id ? { ...i, uploading: false } : i)
@@ -125,24 +125,24 @@ export class AudioList implements OnInit {
             this.toastService.error('Error al guardar datos procesados: ' + this.bookService.getErrorMessage(err));
           });
         }).catch(err => {
-          // En caso la transcripción falle, intentamos guardar al menos el metaMediaId
-          this.bookService.update('audios', item.id, { metaMediaId: metaId }).then(() => {
+          // En caso la transcripción falle, intentamos guardar al menos la URL estable
+          this.bookService.update('audios', item.id, { url: stableAudioUrl, metaMediaId: null }).then(() => {
             this.allAudios.update(items =>
-              items.map(i => i.id === item.id ? { ...i, metaMediaId: metaId, uploading: false } : i)
+              items.map(i => i.id === item.id ? { ...i, url: stableAudioUrl, metaMediaId: null, uploading: false } : i)
             );
-            this.toastService.warning('Audio subido a Meta, pero falló la transcripción');
+            this.toastService.warning('Audio guardado en Azure, pero falló la transcripción');
           }).catch(dbErr => {
             this.allAudios.update(items =>
               items.map(i => i.id === item.id ? { ...i, uploading: false } : i)
             );
-            this.toastService.error('Error al guardar Meta ID: ' + this.bookService.getErrorMessage(dbErr));
+            this.toastService.error('Error al guardar URL procesada: ' + this.bookService.getErrorMessage(dbErr));
           });
         });
       }).catch(err => {
         this.allAudios.update(items =>
           items.map(i => i.id === item.id ? { ...i, uploading: false } : i)
         );
-        this.toastService.error('Error al subir a Meta: ' + this.bookService.getErrorMessage(err));
+        this.toastService.error('Error al guardar audio en Azure: ' + this.bookService.getErrorMessage(err));
       });
     }).catch(err => {
       this.allAudios.update(items =>

@@ -71,8 +71,8 @@
     }
   </div>
 
-  <!-- Physical Page & Meta ID in the same row -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <!-- Physical Page -->
+  <div class="grid grid-cols-1 gap-4">
     <div>
       <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">Página del Libro <span class="text-danger">*</span></label>
       <input
@@ -85,17 +85,6 @@
       @if (form.get('bookPage')?.touched && form.get('bookPage')?.invalid) {
         <span class="text-[10px] text-danger mt-1 font-inter-medium block">Página física válida requerida (mín. 1).</span>
       }
-    </div>
-
-    <div>
-      <label class="block text-xs font-inter-bold text-text/80 uppercase tracking-wider mb-2">ID Meta Media</label>
-      <input
-        type="number"
-        formControlName="metaMediaId"
-        class="w-full px-3 py-2 text-sm bg-text/5 border border-text/10 focus:border-secondary rounded-lg text-text font-inter-regular outline-none transition-all focus:ring-1 focus:ring-secondary/20"
-        placeholder="Ej: 321"
-        min="1"
-      />
     </div>
   </div>
 

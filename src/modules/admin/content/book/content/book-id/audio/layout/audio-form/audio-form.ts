@@ -16,6 +16,7 @@ export class AudioForm {
   
   data = input<ApiResponse<'book', 'findOneBookAudio'> | null>(null);
   editMode = input<boolean>(false);
+  bookId = input<number | null>(null);
   onSubmitForm = output<Record<string, unknown>>();
 
   uploadingAudio = signal(false);
@@ -25,7 +26,7 @@ export class AudioForm {
     audioIndex: ['', [Validators.required]],
     transcription: [''],
     bookPage: [null, [Validators.required, Validators.min(1)]],
-    metaMediaId: [null]
+    metaMediaId: [null],
   });
 
   constructor() {
@@ -48,21 +49,56 @@ export class AudioForm {
 
     this.uploadingAudio.set(true);
     const audioUrl = urlControl.value as string;
+    const audioIndex = String(this.form.get('audioIndex')?.value || '').trim();
+    const bookId = this.bookId();
 
-    this.api.storage.uploadAudioUrlToMeta({ url: audioUrl })
-      .then((res) => {
-        if (res.data && res.data.metaMediaId) {
-          const numericId = +res.data.metaMediaId;
-          this.form.patchValue({ metaMediaId: numericId });
-          this.toastService.success('Audio subido y sincronizado con Meta.');
+    if (!bookId || !audioIndex) {
+      this.uploadingAudio.set(false);
+      this.toastService.error('Primero indica el índice del audio antes de procesarlo.');
+      return;
+    }
+
+    this.api.book.findAllBookAudios({ bookId, search: audioIndex, limit: 20, page: 1 })
+      .then((existingRes) => {
+        const existing = existingRes.data?.data?.find(
+          (item) => item.id !== this.data()?.id && item.audioIndex === audioIndex,
+        );
+        if (existing) {
+          this.toastService.warning(`El audio ${audioIndex} ya está registrado. No se subió otra copia.`);
+          throw new Error('DUPLICATE_BOOK_AUDIO');
+        }
+
+        return this.api.storage.uploadAudioUrlToMeta({ url: audioUrl });
+      })
+      .then(async (res) => {
+        if (res.data && res.data.url) {
+          const stableAudioUrl = res.data.url || audioUrl;
+          this.form.patchValue({
+            url: stableAudioUrl,
+            metaMediaId: null,
+          });
+
+          try {
+            const transcriptionRes = await this.api.bookAi['book-aiTranscribeAudio']({ url: stableAudioUrl });
+            this.form.patchValue({
+              transcription: transcriptionRes.data.transcription || '',
+            });
+            this.toastService.success('Audio guardado en Azure y transcrito.');
+          } catch (transcriptionError) {
+            console.error('Error al transcribir audio:', transcriptionError);
+            this.toastService.warning('Audio guardado en Azure, pero falló la transcripción.');
+          }
         } else {
-          this.toastService.error('Respuesta inesperada del servidor al subir a Meta.');
+          this.toastService.error('Respuesta inesperada del servidor al subir el audio.');
         }
       })
       .catch((err: unknown) => {
-        console.error('Error al subir a Meta:', err);
+        if (err instanceof Error && err.message === 'DUPLICATE_BOOK_AUDIO') {
+          return;
+        }
+        console.error('Error al subir audio:', err);
         const apiError = err as { error?: { message?: string | string[] }; message?: string };
-        const message = apiError.error?.message || apiError.message || 'Error al subir audio a Meta';
+        const message = apiError.error?.message || apiError.message || 'Error al subir audio a Azure';
         const finalMsg = Array.isArray(message) ? message[0] : message;
         this.toastService.error(finalMsg);
       })
@@ -78,12 +114,7 @@ export class AudioForm {
     }
     const val = { ...this.form.value } as Record<string, unknown>;
     val['bookPage'] = +(val['bookPage'] as number | string);
-    
-    if (val['metaMediaId'] !== null && val['metaMediaId'] !== undefined && val['metaMediaId'] !== '') {
-      val['metaMediaId'] = +(val['metaMediaId'] as number | string);
-    } else {
-      val['metaMediaId'] = null;
-    }
+    val['metaMediaId'] = null;
 
     this.onSubmitForm.emit(val);
   }

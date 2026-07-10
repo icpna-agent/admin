@@ -667,7 +667,7 @@ export interface UploadResultDto {
 export interface UploadImageMetaResultDto {
   success: boolean;
   url: string;
-  metaMediaId: string;
+  metaMediaId?: string | null;
 }
 
 export interface UploadAudioUrlDto {
@@ -680,7 +680,8 @@ export interface UploadAudioUrlDto {
 
 export interface UploadAudioMetaResultDto {
   success: boolean;
-  metaMediaId: string;
+  url: string;
+  metaMediaId?: string | null;
 }
 
 export interface BookPreviewDto {
@@ -2183,7 +2184,7 @@ export namespace Storage {
    * No description
    * @tags storage
    * @name StorageUploadFile
-   * @summary Sube una imagen al proveedor externo freeimage.host
+   * @summary Sube una imagen a Azure Blob Storage
    * @request POST:/admin/storage/upload
    * @secure
    * @response `200` `StorageUploadFileData` Imagen subida exitosamente
@@ -2200,7 +2201,7 @@ export namespace Storage {
    * No description
    * @tags storage
    * @name StorageUploadImageToMeta
-   * @summary Sube una imagen a freeimage.host y luego a Meta, devolviendo el ID de Meta
+   * @summary Sube una imagen a Azure Blob Storage. No sube a Meta.
    * @request POST:/admin/storage/upload-image-to-meta
    * @secure
    * @response `200` `StorageUploadImageToMetaData` Imagen subida exitosamente a Meta
@@ -2217,7 +2218,7 @@ export namespace Storage {
    * No description
    * @tags storage
    * @name StorageUploadAudioUrlToMeta
-   * @summary Descarga un audio desde una URL y lo sube a Meta, devolviendo el ID de Meta
+   * @summary Descarga un audio desde una URL y lo guarda en Azure. No sube a Meta.
    * @request POST:/admin/storage/upload-audio-url-to-meta
    * @secure
    * @response `200` `StorageUploadAudioUrlToMetaData` Audio subido exitosamente a Meta
@@ -3857,7 +3858,7 @@ export class Api<SecurityDataType extends unknown> {
      *
      * @tags storage
      * @name StorageUploadFile
-     * @summary Sube una imagen al proveedor externo freeimage.host
+     * @summary Sube una imagen a Azure Blob Storage
      * @request POST:/admin/storage/upload
      * @secure
      * @response `200` `StorageUploadFileData` Imagen subida exitosamente
@@ -3878,7 +3879,7 @@ export class Api<SecurityDataType extends unknown> {
      *
      * @tags storage
      * @name StorageUploadImageToMeta
-     * @summary Sube una imagen a freeimage.host y luego a Meta, devolviendo el ID de Meta
+     * @summary Sube una imagen a Azure Blob Storage. No sube a Meta.
      * @request POST:/admin/storage/upload-image-to-meta
      * @secure
      * @response `200` `StorageUploadImageToMetaData` Imagen subida exitosamente a Meta
@@ -3902,7 +3903,7 @@ export class Api<SecurityDataType extends unknown> {
      *
      * @tags storage
      * @name StorageUploadAudioUrlToMeta
-     * @summary Descarga un audio desde una URL y lo sube a Meta, devolviendo el ID de Meta
+     * @summary Descarga un audio desde una URL y lo guarda en Azure. No sube a Meta.
      * @request POST:/admin/storage/upload-audio-url-to-meta
      * @secure
      * @response `200` `StorageUploadAudioUrlToMetaData` Audio subido exitosamente a Meta

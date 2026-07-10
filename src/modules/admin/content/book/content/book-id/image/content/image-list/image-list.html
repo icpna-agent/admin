@@ -42,7 +42,6 @@
               <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider w-24">Miniatura</th>
               <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">Enlace</th>
               <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider w-32">Pág. Digital</th>
-              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider w-36">Meta Media ID</th>
               <th class="px-4 py-3 text-right text-xs font-inter-bold text-text/60 uppercase tracking-wider w-24">Acciones</th>
             </tr>
           </thead>
@@ -70,13 +69,6 @@
                   <span class="inline-flex items-center gap-1 text-xs font-inter-semibold text-secondary bg-secondary/5 px-2 py-0.5 rounded border border-secondary/15">
                     <i class="fas fa-file-invoice text-[10px]"></i> Pág. {{ item.bookPage }}
                   </span>
-                </td>
-                <td class="px-4 py-3 whitespace-nowrap">
-                  @if (item.metaMediaId) {
-                    <code class="px-1.5 py-0.5 bg-text/5 border border-text/10 rounded text-[10px] font-mono text-text/80">{{ item.metaMediaId }}</code>
-                  } @else {
-                    <span class="text-xs text-text/30 italic">No asociado</span>
-                  }
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap text-right">
                   <div class="flex items-center justify-end gap-1">
@@ -113,6 +105,7 @@
   >
     <app-image-form
       [editMode]="false"
+      [bookId]="+bookId()!"
       (onSubmitForm)="handleFormSubmit($event)"
     />
   </app-modal-form>

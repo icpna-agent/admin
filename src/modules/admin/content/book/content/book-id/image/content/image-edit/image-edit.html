@@ -19,6 +19,7 @@
       <app-image-form
         [data]="data()"
         [editMode]="true"
+        [bookId]="+bookId()!"
         (onSubmitForm)="handleFormSubmit($event)"
       />
       <div class="flex justify-end gap-3 p-6 border-t border-text/10">
