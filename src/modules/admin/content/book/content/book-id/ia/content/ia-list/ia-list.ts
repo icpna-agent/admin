@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit, OnDestroy, input, HostListener } from '@angular/core';
+import { Component, signal, inject, OnDestroy, input, HostListener, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BookTabs } from '../../../../../../../components/book-tabs/book-tabs';
@@ -45,11 +45,12 @@ interface CapturedPage {
     }
   `]
 })
-export class IaList implements OnInit, OnDestroy {
+export class IaList implements OnDestroy {
   private toastService = inject(ToastService);
   private bookService = inject(BookService);
 
   bookId = input<string>();
+  private activeBookId: string | undefined;
 
   // Form Fields
   bookUrl = signal('');
@@ -75,8 +76,21 @@ export class IaList implements OnInit, OnDestroy {
   private processingQueue: string[] = [];
   private isProcessing = false;
 
-  ngOnInit() {
-    this.loadBook();
+  constructor() {
+    effect(() => {
+      const bookId = this.bookId();
+      if (!bookId || bookId === this.activeBookId) return;
+      this.activeBookId = bookId;
+      this.stopEventSource();
+      this.bookUrl.set('');
+      this.capturedPages.set([]);
+      this.selectedPage.set(null);
+      this.selectedPageIndex.set(-1);
+      this.progress.set(0);
+      this.statusText.set('');
+      this.loading.set(false);
+      this.loadBook();
+    });
   }
 
   loadBook() {

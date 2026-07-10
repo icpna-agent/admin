@@ -46,26 +46,28 @@
 
   <nav class="flex-1 overflow-y-auto py-6 px-3 space-y-1 overflow-hidden">
     @if (!isCollapsed()) {
-    <div class="px-3 mb-3 text-xs font-inter-bold text-muted uppercase tracking-[0.2em]">Menu</div>
+    <div class="px-3 mb-3 text-sm font-inter-bold text-text uppercase tracking-wide">Menu</div>
     }
 
     @if (canShowBooks()) {
     <button
+      type="button"
       (click)="navigateTo(buildPath(PATH.admin.agent) + '/list')"
+      [attr.aria-label]="isCollapsed() ? 'Agentes' : null"
       [title]="isCollapsed() ? 'Agentes' : ''"
-      class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl duration-200 group overflow-hidden text-left transition-colors"
+      class="w-full flex items-center gap-3 px-4 py-3 rounded-lg duration-200 group overflow-hidden text-left transition-colors"
       [class.bg-primary/10]="isAgentSectionActive()"
-      [class.text-primary]="isAgentSectionActive()"
-      [class.text-muted]="!isAgentSectionActive()"
+      [class.text-primary-700]="isAgentSectionActive()"
+      [class.text-text]="!isAgentSectionActive()"
       [class.hover:bg-primary/10]="true"
-      [class.hover:text-primary]="true"
+      [class.hover:text-primary-700]="true"
       [class.justify-center]="isCollapsed()"
     >
       <i
         [class]="
           'fas fa-robot' +
           ' w-5 text-center shrink-0 transition-colors duration-200 ' +
-          (isAgentSectionActive() ? 'text-primary' : 'group-hover:text-primary')
+          (isAgentSectionActive() ? 'text-primary-700' : 'group-hover:text-primary-700')
         "
       ></i>
       @if (!isCollapsed()) {
@@ -76,21 +78,23 @@
 
     @if (canShowBooks()) {
     <button
+      type="button"
       (click)="navigateTo(buildPath(PATH.admin.user) + '/list')"
+      [attr.aria-label]="isCollapsed() ? 'Usuarios' : null"
       [title]="isCollapsed() ? 'Usuarios' : ''"
-      class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl duration-200 group overflow-hidden text-left transition-colors"
+      class="w-full flex items-center gap-3 px-4 py-3 rounded-lg duration-200 group overflow-hidden text-left transition-colors"
       [class.bg-primary/10]="isUserSectionActive()"
-      [class.text-primary]="isUserSectionActive()"
-      [class.text-muted]="!isUserSectionActive()"
+      [class.text-primary-700]="isUserSectionActive()"
+      [class.text-text]="!isUserSectionActive()"
       [class.hover:bg-primary/10]="true"
-      [class.hover:text-primary]="true"
+      [class.hover:text-primary-700]="true"
       [class.justify-center]="isCollapsed()"
     >
       <i
         [class]="
           'fas fa-users' +
           ' w-5 text-center shrink-0 transition-colors duration-200 ' +
-          (isUserSectionActive() ? 'text-primary' : 'group-hover:text-primary')
+          (isUserSectionActive() ? 'text-primary-700' : 'group-hover:text-primary-700')
         "
       ></i>
       @if (!isCollapsed()) {
@@ -101,21 +105,24 @@
 
     @if (canShowBooks()) {
     <button
+      type="button"
       (click)="handleBookClick()"
+      [attr.aria-label]="isCollapsed() ? 'Libro' : null"
+      [attr.aria-expanded]="!isCollapsed() ? booksOpen() : null"
       [title]="isCollapsed() ? 'Libro' : ''"
-      class="w-full flex items-center gap-3 px-4 py-3 rounded-2xl duration-200 group overflow-hidden text-left transition-colors"
+      class="w-full flex items-center gap-3 px-4 py-3 rounded-lg duration-200 group overflow-hidden text-left transition-colors"
       [class.bg-primary/10]="isBookSectionActive()"
-      [class.text-primary]="isBookSectionActive()"
-      [class.text-muted]="!isBookSectionActive()"
+      [class.text-primary-700]="isBookSectionActive()"
+      [class.text-text]="!isBookSectionActive()"
       [class.hover:bg-primary/10]="true"
-      [class.hover:text-primary]="true"
+      [class.hover:text-primary-700]="true"
       [class.justify-center]="isCollapsed()"
     >
       <i
         [class]="
           'fas fa-book-open' +
           ' w-5 text-center shrink-0 transition-colors duration-200 ' +
-          (isBookSectionActive() ? 'text-primary' : 'group-hover:text-primary')
+          (isBookSectionActive() ? 'text-primary-700' : 'group-hover:text-primary-700')
         "
       ></i>
       @if (!isCollapsed()) {
@@ -130,22 +137,23 @@
     @if (!isCollapsed() && booksOpen()) {
       <div class="ml-4 mt-2 space-y-1 border-l border-border pl-3">
         @if (loadingBooks()) {
-          <div class="px-3 py-2 text-xs text-muted"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>
+          <div class="px-3 py-2 text-sm text-text"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Cargando...</div>
         } @else {
           @for (book of books(); track book.id) {
             <button
               type="button"
               (click)="navigateTo(bookPath(book.id))"
-              class="w-full rounded-xl px-3 py-2.5 text-left transition-colors"
+              [attr.aria-current]="isActive(bookPath(book.id)) ? 'page' : null"
+              class="w-full rounded-lg px-3 py-2.5 text-left transition-colors"
               [class.bg-primary/10]="isActive(bookPath(book.id))"
-              [class.text-primary]="isActive(bookPath(book.id))"
-              [class.text-muted]="!isActive(bookPath(book.id))"
+              [class.text-primary-700]="isActive(bookPath(book.id))"
+              [class.text-text]="!isActive(bookPath(book.id))"
               [class.hover:bg-primary/10]="true"
             >
-              <span class="block truncate text-xs font-inter-semibold">{{ book.edition || book.level }}</span>
+              <span class="block truncate text-sm font-inter-semibold">{{ book.edition || book.level }}</span>
             </button>
           } @empty {
-            <div class="px-3 py-2 text-xs text-muted">Sin libros registrados</div>
+            <div class="px-3 py-2 text-sm text-text">Sin libros registrados</div>
           }
         }
       </div>
@@ -157,9 +165,11 @@
 
   <div class="px-4 py-3 border-t border-text/10">
     <button
+      type="button"
       (click)="logout()"
+      [attr.aria-label]="isCollapsed() ? 'Cerrar sesion' : null"
       [title]="isCollapsed() ? 'Cerrar sesion' : ''"
-      class="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-muted hover:bg-danger/8 hover:text-danger duration-200 overflow-hidden"
+      class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-text hover:bg-danger/8 hover:text-danger duration-200 overflow-hidden"
       [class.justify-center]="isCollapsed()"
     >
       <i class="fas fa-sign-out-alt w-5 text-center shrink-0"></i>

@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit, viewChild, input } from '@angular/core';
+import { Component, signal, inject, viewChild, input, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { BookService } from '@service/book.service';
@@ -15,7 +15,7 @@ import { PaginationComponent } from '@module/admin/components/pagination/paginat
   imports: [CommonModule, ModalForm, BookTabs, PanelForm, PaginationComponent],
   templateUrl: './panel-list.html',
 })
-export class PanelList implements OnInit {
+export class PanelList {
   private bookService = inject(BookService);
   private toastService = inject(ToastService);
   private alertService = inject(AlertService);
@@ -28,6 +28,7 @@ export class PanelList implements OnInit {
   showModal = signal(false);
   searchQuery = signal('');
   private searchTimeout: any;
+  private activeBookId: string | undefined;
 
   // Pagination
   currentPage = signal(1);
@@ -48,8 +49,17 @@ export class PanelList implements OnInit {
 
   formComponent = viewChild<PanelForm>(PanelForm);
 
-  ngOnInit() {
-    this.loadItems();
+  constructor() {
+    effect(() => {
+      const bookId = this.bookId();
+      if (!bookId || bookId === this.activeBookId) return;
+      this.activeBookId = bookId;
+      this.currentPage.set(1);
+      this.searchQuery.set('');
+      this.closeZoom();
+      if (this.searchTimeout) clearTimeout(this.searchTimeout);
+      this.loadItems();
+    });
   }
 
   loadItems() {

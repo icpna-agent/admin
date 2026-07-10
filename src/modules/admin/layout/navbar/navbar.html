@@ -41,7 +41,7 @@
         @if (profilePicture() && !photoError()) {
           <img [src]="profilePicture()" alt="Foto de perfil" (error)="onPhotoError()" class="h-full w-full object-cover" />
         } @else {
-          <div class="h-full w-full flex items-center justify-center bg-primary/10 text-primary font-inter-bold text-sm tracking-wider">
+          <div class="h-full w-full flex items-center justify-center bg-primary/10 text-primary-700 font-inter-bold text-sm tracking-wider">
             {{ userInitials() }}
           </div>
         }

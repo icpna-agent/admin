@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit, viewChild, input } from '@angular/core';
+import { Component, signal, inject, viewChild, input, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { BookService } from '@service/book.service';
@@ -15,7 +15,7 @@ import { PaginationComponent } from '@module/admin/components/pagination/paginat
   imports: [CommonModule, ModalForm, BookTabs, AudioForm, PaginationComponent],
   templateUrl: './audio-list.html',
 })
-export class AudioList implements OnInit {
+export class AudioList {
   private bookService = inject(BookService);
   private toastService = inject(ToastService);
   private alertService = inject(AlertService);
@@ -28,6 +28,7 @@ export class AudioList implements OnInit {
   showModal = signal(false);
   searchQuery = signal('');
   private searchTimeout: any;
+  private activeBookId: string | undefined;
 
   // Pagination
   currentPage = signal(1);
@@ -154,8 +155,19 @@ export class AudioList implements OnInit {
 
   formComponent = viewChild<AudioForm>(AudioForm);
 
-  ngOnInit() {
-    this.loadItems();
+  constructor() {
+    effect(() => {
+      const bookId = this.bookId();
+      if (!bookId || bookId === this.activeBookId) return;
+      this.activeBookId = bookId;
+      this.currentPage.set(1);
+      this.searchQuery.set('');
+      this.closeZoom();
+      this.showUrlsModal.set(false);
+      this.allAudios.set([]);
+      if (this.searchTimeout) clearTimeout(this.searchTimeout);
+      this.loadItems();
+    });
   }
 
   loadItems() {

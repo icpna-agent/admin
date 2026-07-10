@@ -3,14 +3,15 @@
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mt-4 lg:mt-0 mb-6">
       <div>
         <h1 class="text-2xl font-anton text-text lowercase">libros {{ bookId() ? '(libro id: ' + bookId() + ')' : '' }}</h1>
-        <p class="text-sm text-text/60 font-inter-regular mt-1">Administra los libros principales de la plataforma.</p>
+        <p class="text-sm text-text font-inter-regular mt-1">Administra los libros principales de la plataforma.</p>
       </div>
       <div class="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
         <div class="relative w-full sm:w-64">
-           <input type="text" placeholder="Buscar" [value]="searchQuery()" (input)="onSearch($event)" class="w-full px-4 py-2 bg-background border border-text/10 rounded-lg text-sm outline-none focus:border-secondary transition-colors">
+           <label for="book-search" class="sr-only">Buscar libros</label>
+           <input id="book-search" type="text" placeholder="Buscar" [value]="searchQuery()" (input)="onSearch($event)" class="w-full px-4 py-2 bg-background border border-text/20 rounded-lg text-sm outline-none focus:border-secondary transition-colors">
         </div>
         <div class="flex gap-2 w-full sm:w-auto">
-          <button (click)="openCreateModal()" class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-secondary text-background rounded-lg text-sm font-inter-semibold hover:bg-secondary/90 transition-all shadow-sm whitespace-nowrap"><i class="fas fa-plus text-xs"></i><span>Nuevo</span></button>
+          <button type="button" (click)="openCreateModal()" class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-secondary-700 text-white rounded-lg text-sm font-inter-semibold hover:bg-secondary-800 transition-all shadow-sm whitespace-nowrap"><i class="fas fa-plus text-xs" aria-hidden="true"></i><span>Nuevo</span></button>
         </div>
       </div>
     </div>
@@ -34,34 +35,34 @@
         <table class="w-full">
           <thead class="bg-text/5 border-b border-text/10">
             <tr>
-              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">ID</th>
-              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">Título</th>
-              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">Edición</th>
-              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">Nivel</th>
-              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">Programa</th>
-              <th class="px-4 py-3 text-left text-xs font-inter-bold text-text/60 uppercase tracking-wider">Estado</th>
-              <th class="px-4 py-3 text-right text-xs font-inter-bold text-text/60 uppercase tracking-wider">Acciones</th>
+              <th scope="col" class="px-4 py-3 text-left text-sm font-inter-bold text-text uppercase tracking-wide">ID</th>
+              <th scope="col" class="px-4 py-3 text-left text-sm font-inter-bold text-text uppercase tracking-wide">Título</th>
+              <th scope="col" class="px-4 py-3 text-left text-sm font-inter-bold text-text uppercase tracking-wide">Edición</th>
+              <th scope="col" class="px-4 py-3 text-left text-sm font-inter-bold text-text uppercase tracking-wide">Nivel</th>
+              <th scope="col" class="px-4 py-3 text-left text-sm font-inter-bold text-text uppercase tracking-wide">Programa</th>
+              <th scope="col" class="px-4 py-3 text-left text-sm font-inter-bold text-text uppercase tracking-wide">Estado</th>
+              <th scope="col" class="px-4 py-3 text-right text-sm font-inter-bold text-text uppercase tracking-wide">Acciones</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-text/10">
             @for (item of items(); track item.id) {
               <tr class="hover:bg-text/5 transition-colors">
-                <td class="px-4 py-3 whitespace-nowrap"><span class="text-xs font-inter-semibold">{{ item.id }}</span></td>
-                <td class="px-4 py-3 whitespace-nowrap"><span class="text-xs font-inter-semibold">{{ item.title || '---' }}</span></td>
-                <td class="px-4 py-3 whitespace-nowrap"><span class="text-xs font-inter-semibold">{{ item.edition || '---' }}</span></td>
-                <td class="px-4 py-3 whitespace-nowrap"><span class="text-xs font-inter-semibold">{{ item.level | titlecase }}</span></td>
-                <td class="px-4 py-3 whitespace-nowrap"><span class="text-xs font-inter-semibold">{{ item.targetProgram | titlecase }}</span></td>
+                <td class="px-4 py-3 whitespace-nowrap"><span class="text-sm font-inter-semibold text-text">{{ item.id }}</span></td>
+                <td class="px-4 py-3 whitespace-nowrap"><span class="text-sm font-inter-semibold text-text">{{ item.title || '---' }}</span></td>
+                <td class="px-4 py-3 whitespace-nowrap"><span class="text-sm font-inter-semibold text-text">{{ item.edition || '---' }}</span></td>
+                <td class="px-4 py-3 whitespace-nowrap"><span class="text-sm font-inter-semibold text-text">{{ item.level | titlecase }}</span></td>
+                <td class="px-4 py-3 whitespace-nowrap"><span class="text-sm font-inter-semibold text-text">{{ item.targetProgram | titlecase }}</span></td>
                 <td class="px-4 py-3 whitespace-nowrap">
                   @if (item.active) {
-                    <span class="px-2 py-0.5 text-[10px] font-inter-bold bg-success/10 text-success rounded-full uppercase tracking-wider">Activo</span>
+                    <span class="px-2 py-0.5 text-xs font-inter-bold bg-success/10 text-success-700 rounded-full uppercase tracking-wide">Activo</span>
                   } @else {
-                    <span class="px-2 py-0.5 text-[10px] font-inter-bold bg-text/10 text-text/60 rounded-full uppercase tracking-wider">Inactivo</span>
+                    <span class="px-2 py-0.5 text-xs font-inter-bold bg-text/10 text-text rounded-full uppercase tracking-wide">Inactivo</span>
                   }
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap text-right">
                   <div class="flex items-center justify-end gap-1">
-                    <button (click)="navigateToEdit(item.id)" class="p-1.5 text-info hover:bg-info/10 rounded-lg transition-colors text-sm" title="Editar"><i class="fas fa-edit"></i></button>
-                    <button (click)="deleteItem(item.id)" class="p-1.5 text-danger hover:bg-danger/10 rounded-lg transition-colors text-sm" title="Eliminar"><i class="fas fa-trash"></i></button>
+                    <button type="button" (click)="navigateToEdit(item.id)" class="p-2 text-info hover:bg-info/10 rounded-lg transition-colors text-sm" [attr.aria-label]="'Editar libro ' + item.id" title="Editar"><i class="fas fa-edit" aria-hidden="true"></i></button>
+                    <button type="button" (click)="deleteItem(item.id)" class="p-2 text-danger hover:bg-danger/10 rounded-lg transition-colors text-sm" [attr.aria-label]="'Eliminar libro ' + item.id" title="Eliminar"><i class="fas fa-trash" aria-hidden="true"></i></button>
                   </div>
                 </td>
               </tr>
